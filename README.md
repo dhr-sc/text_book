@@ -18,7 +18,7 @@ NOAA CoastWatch/OceanWatch provides easy access for everyone to global and regio
 
 These course materials were developed and are distributed by the [West Coast Node](https://coastwatch.pfeg.noaa.gov/) of NOAA CoastWatch. Information about the courses and services offered by West Coast Node can be found at the following links:  
 
-<button>[Courses](https://coastwatch.pfeg.noaa.gov/courses/satellite_course.html)</button> \ \ \ \ \ \ \ 
-<button>[Data Catalog](https://coastwatch.pfeg.noaa.gov/data.html)</button> \ \ \ \ \ \ \ 
-<button>[Data Server](https://coastwatch.pfeg.noaa.gov/erddapinfo/index.html)</button> \ \ \ \ \ \ \ 
+<button>[Courses](https://coastwatch.pfeg.noaa.gov/courses/satellite_course.html)</button> 
+<button>[Data Catalog](https://coastwatch.pfeg.noaa.gov/data.html)</button>  
+<button>[Data Server](https://coastwatch.pfeg.noaa.gov/erddapinfo/index.html)</button>   
 <button>[Xtractomatic](https://coastwatch.pfeg.noaa.gov/xtracto/)</button>
