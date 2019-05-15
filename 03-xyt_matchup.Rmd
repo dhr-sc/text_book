@@ -1,0 +1,231 @@
+
+# Matchups to ship or animal tracks {#xyt-matchup}
+>notebook filename | 03-xyt_matchup.Rmd    
+history | converted to R notebook from xyt_matchup.R  
+
+This exercise you will extract satellite data around a set of points defined by longitude, latitude, and time coordinates like that produced by an animal telemetery tag, and ship track, or a glider tract. 
+
+The exercise demonstrates the following techniques:  
+
+* Using the **rxtracto** function to extract satellite data along a track  
+* Using **rerddap** to retrieve information about a dataset from ERDDAP  
+* Loading data from a tab separated file  
+* Plotting the satellite data onto a map
+
+This data is taken from the ERDDAP server at [http://coastwatch.pfeg.noaa.gov/erddap/](http://coastwatch.pfeg.noaa.gov/erddap/)
+
+## Install required packages and load libraries
+```{r install,message=FALSE,warning=FALSE}
+
+# Function to check if pkgs are installed, install missing pkgs, and load all required pkgs.
+pkgTest <- function(x)
+{
+  if (!require(x,character.only = TRUE))
+  {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop(x, " :Package not found")
+  }
+}
+
+# create list of required packages
+list.of.packages <- c("ncdf4", "parsedate", "devtools", "graphics", "maps", "mapdata")
+
+# create list of installed packages
+pkges = installed.packages()[,"Package"]
+
+# Install and load all required pkgs
+for (pk in list.of.packages) {
+  pkgTest(pk)
+}
+
+# check if devtools pkgs are install. Install missing pkgs.
+if(!('rerddapXtracto' %in% pkges)) {
+  devtools::install_github("rmendels/rerddapXtracto")}
+if(!('plotdap' %in% pkges)) {
+  devtools::install_github('ropensci/plotdap')} 
+if(!('rerddap' %in% pkges)) {
+  devtools::install_github("ropensci/rerddap")}
+
+library(rerddap)
+library(rerddapXtracto)
+```
+## Load XYZ coordinates
+In this exercise we will bring in the XYZ coordinates from a tab separated file. There are a number of files from tagged Marlins in the directory 'tags'. We will use the "Marlin-tag38606.txt" file for this example.  
+
+The tab separated file has this structure:  
+
+>date	lon	lat  
+4/23/2003	203.899	19.664  
+4/24/2003	204.151	19.821  
+4/30/2003	203.919	20.351  
+'...  
+12/24/2003	253.423	18.99  
+
+**The script below:**   
+
+* Loads the boudary data from the tab separated file into a dataframe  
+* Extracts the longitude, latitude, and time data into vector variables  
+* Converts the time data into a date object and outputs as formatted strings  
+* Prints out the max and min for longitude, latitude, ane time  
+```{r laodcsv}
+infile<-'tags/Marlin-tag38606.txt'
+
+tagdata<-read.csv(infile,head=TRUE,sep="\t")
+
+## For convenience make shorter names for the latitude and longitude data 
+xcoord <- tagdata$lon  
+ycoord <- tagdata$lat
+
+# Change the date format code as needed for reading in datasets using a different timeformat
+tcoord <-as.Date(tagdata$date, format='%m/%d/%Y')   # Y for 4 digits, y for 2 digits 
+
+# Find the minimum and maximum values for the coordinates
+paste("lon", min(xcoord), ":", max(xcoord), "| lat", min(ycoord), ":", max(ycoord), "| time", min(tcoord), ":", max(tcoord))
+
+```
+
+## Select the dataset and download its metadata  
+For this example we will use the SeaWiFS 8-day composite chlorophyll dataset (ID erdSW2018chla8day)  
+
+**The script below:**  
+
+* Gathers information about the dataset (metadata) using **rerddap**  
+* Displays the information  
+
+**Set the following arguments for rerddap**  
+
+* Set the dataset ID: dataset <- 'erdSW2018chla8day'
+* The default source ERDDAP for **rerddap** is "https://upwell.pfeg.noaa.gov/erddap". Since we are pulling the data from the ERDDAP at "http://coastwatch.pfeg.noaa.gov/erddap/", change the url to url = "http://coastwatch.pfeg.noaa.gov/erddap/"
+
+```{r dataInfo}
+dataset <- 'erdSW2018chla8day'
+# Use rerddap to get dataset metadata 
+# if you encouter an error reading the nc file clear the rerrdap cache: 
+rerddap::cache_delete_all(force = TRUE)
+dataInfo <- rerddap::info(dataset, url= "https://coastwatch.pfeg.noaa.gov/erddap/")
+# Display the metadata
+dataInfo
+```
+## Extract the satellite data  
+
+* Double check dataInfo to make sure the dataset covers the time, longitude, and latitude ranges in your XYT data.  
+* Use the name of the chlorophyll parameter that was displayed above in dataInfo: **parameter <- "chlorophyll"**  
+* Use the xcoord, ycoord, and tcoord vectors you extracted from the tab separated file.
+* Some datasets have an altitude dimension. If so, then zcood must be included in the rxtracto call. The "erdSW2018chla8day" dataset does not include an altitude dimension.  
+* Define the search "radius" for the gridded data. The **rxtracto** function allow you to set the size of the box used to collect data around the track points using the xlen and ylen arguments. The values for xlen and ylen are in degree. For out example we 0.2 degrees for both arguments. 
+* The default source ERDDAP for **rxtracto** is "https://upwell.pfeg.noaa.gov/erddap/". Since we are pulling the data from the ERDDAP at "http://coastwatch.pfeg.noaa.gov/erddap/", change the urlbase to urlbase = "http://coastwatch.pfeg.noaa.gov/erddap/"
+* Run the rxtracto function to extract the data from ERDDAP.  
+
+```{r rxtracto}
+
+parameter <- 'chlorophyll'
+
+xlen <- 0.2 
+ylen <- 0.2
+
+urlbase = "http://coastwatch.pfeg.noaa.gov/erddap/"
+
+# Some datasets have an altitude dimension. If so, then zcood must be included in the rxtracto call.  
+# If the dataInfo shows an altitude dimension, uncomment "zcoord <- 0" and include tcoord=tcoord in the rxtracto call.
+# zcoord <- 0.
+
+swchl <- rxtracto(dataInfo, 
+                  parameter=parameter, 
+                  xcoord=xcoord, ycoord=ycoord, 
+                  tcoord=tcoord, xlen=xlen, ylen=ylen, urlbase=urlbase)
+
+```
+
+After the extraction is complete, "swchl" will contain the following 11 colomns 
+
+>mean =              mean of data within search radius  
+stdev =             standard deviation of data within search radius  
+n =                 number of points found within search radius  
+satellite date =    time of returned value  
+requested lon min = min longitude of call (decimal degrees)  
+requested lon max = max longitude of call (decimal degrees)  
+requested lat min = min latitude of call (decimal degrees)  
+requested lat max = max latitude of call (decimal degrees)  
+requested date =    requested time in tag  
+median =            median of data within search radius  
+mad =               median absolute deviation of data within search radius  
+
+## Plot the data onto a map  
+**Prepare the data for plotting**  
+
+* Combine the data into a single dataframes  
+* Remove the locations where satellite chl is not available (NA)  
+```{r plotprep}
+# shorten variable name for ease in referencing 
+names(swchl)[names(swchl)=="mean chlorophyll"] <- "mean"
+
+# First combine the two dataframes into one, so it will be easy to take 
+# into account the locations that didn’t retrieve a value.
+
+alldata <- data.frame(lon=xcoord, lat=ycoord, time=tcoord,mean=swchl$mean)
+
+# Remove the locations where satellite chl is NA: 
+nodata <- subset(alldata, is.na(alldata$mean))
+gooddata <- subset(alldata, !is.na(alldata$mean))
+```
+**Plot the data on a map**  
+Pick a longitude and latitude range for the map that includes all of the points. A good way to do this is to look at the mimimium and maximum values for the longitude and latitude vectors.
+```{r minmax}
+# Find the minimum and maximum values for the coordinates
+paste("lon", min(xcoord)-360, ":", max(xcoord)-360, "| lat", min(ycoord), ":", max(ycoord))
+
+```
+
+**Use the map function to create the map layout**  
+
+* Set the longitude range to xlim=c(-160,-100)  
+* Set the latitude range to ylim=c(18,30)  
+* Set the map dataset to use: database="world"  
+* Set the map color of the areas on the map not containing data  
+
+**Overlay the track data, color coded by satellite chlorophyll value**  
+
+**Longitude vector is in 0 to 360 format. Convert to -180 to 180 for mapping.**  
+
+**Add a title**  
+
+**Uncomment the png line and the dev.off() line to save the image**  
+  
+```{r plot}
+# png(file="xyt_matchup.png")
+
+map(database="world",
+    xlim=c(-160,-100),
+    ylim=c(18,30),
+    col="grey80",fill=TRUE)
+map.axes()
+
+# Overlay the track data, color coded by satellite chlorophyll value. 
+# Longitude in the dataframe is expressed as 0 to 360, this needs to 
+# be converted into -180 to 180 format to work with the mapped plot 
+
+gooddata$col <- rev(rainbow(10))[as.numeric(cut(gooddata$mean,breaks = 10))]
+points(gooddata$lon-360, gooddata$lat,col=gooddata$col, pch=19, cex=.8)
+
+#Overplot the positions where no data was extracted.  
+points(nodata$lon-360, nodata$lat,cex=.7)
+
+# Add a title, derived from the input file and referencing the dataset used 
+title(main=paste0(substr(infile,start=13,stop=20)," with ",dataset))
+
+#dev.off()
+```
+
+
+
+## Try this on your own
+This matchup was done using weekly (8-day) data. Try rerunning the example using the daily (erdSW2018chla1day) or the monthly (erdSW2018chlamday) satellite data product and see how the results differ 
+
+There is no colorbar on the plot created. Creating colorbars in the base R graphics is not all that straightforward. However, it is easy to do using ggplot. For tips in creating the plot in ggplot, look at the “Using the xtratomatic routines” write-up available on the xtracto webpage [http://coastwatch.pfel.noaa.gov/xtracto](http://coastwatch.pfel.noaa.gov/xtracto). 
+
+```{r, nice-fig2, echo=FALSE}
+htmltools::img(src = knitr::image_uri("images/cw_logo_notext.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px; width:100px')
+```
+

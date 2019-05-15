@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Exercises for the NOAA Satellite Course</title>
+  <meta name="description" content="A complitation of R exercises used in the NOAA Satellite Course.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Exercises for the NOAA Satellite Course" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="http://coastwatch.pfeg.noaa.gov/" />
+  
+  <meta property="og:description" content="A complitation of R exercises used in the NOAA Satellite Course." />
+  <meta name="github-repo" content="dhr-sc" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Exercises for the NOAA Satellite Course" />
+  
+  <meta name="twitter:description" content="A complitation of R exercises used in the NOAA Satellite Course." />
+  
+
+<meta name="author" content="Cara Wilson and Dale Robinson">
+
+
+<meta name="date" content="2019-04-20">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+
+<link rel="next" href="introduction.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">CoastWatch R Examples</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#noaa-coastwatchoceanwatch-program"><i class="fa fa-check"></i>NOAA CoastWatch/OceanWatch Program</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#coastwatch-west-coast-regional-node"><i class="fa fa-check"></i>CoastWatch West Coast Regional Node</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#the-rxtracto-function"><i class="fa fa-check"></i><b>1.1</b> The rxtracto function</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#the-rxtracto_3d-function"><i class="fa fa-check"></i><b>1.2</b> The rxtracto_3D function</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="sanctuary.html"><a href="sanctuary.html"><i class="fa fa-check"></i><b>2</b> Extract data within a boundary</a><ul>
+<li class="chapter" data-level="2.1" data-path="sanctuary.html"><a href="sanctuary.html#install-packages-and-load-libraries"><i class="fa fa-check"></i><b>2.1</b> Install packages and load libraries</a></li>
+<li class="chapter" data-level="2.2" data-path="sanctuary.html"><a href="sanctuary.html#load-sanctuary-boundary-coordinates"><i class="fa fa-check"></i><b>2.2</b> Load sanctuary boundary coordinates</a></li>
+<li class="chapter" data-level="2.3" data-path="sanctuary.html"><a href="sanctuary.html#select-the-chloropyll-dataset"><i class="fa fa-check"></i><b>2.3</b> Select the chloropyll dataset</a></li>
+<li class="chapter" data-level="2.4" data-path="sanctuary.html"><a href="sanctuary.html#set-the-options-for-rxtractogon"><i class="fa fa-check"></i><b>2.4</b> Set the options for rxtractogon</a></li>
+<li class="chapter" data-level="2.5" data-path="sanctuary.html"><a href="sanctuary.html#extract-data-and-mask-it-using-rxtractogon"><i class="fa fa-check"></i><b>2.5</b> Extract data and mask it using rxtractogon</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="sanctuary.html"><a href="sanctuary.html#plot-the-data"><i class="fa fa-check"></i><b>2.5.1</b> Plot the data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="xyt-matchup.html"><a href="xyt-matchup.html"><i class="fa fa-check"></i><b>3</b> Matchups to ship or animal tracks</a><ul>
+<li class="chapter" data-level="3.1" data-path="xyt-matchup.html"><a href="xyt-matchup.html#install-required-packages-and-load-libraries"><i class="fa fa-check"></i><b>3.1</b> Install required packages and load libraries</a></li>
+<li class="chapter" data-level="3.2" data-path="xyt-matchup.html"><a href="xyt-matchup.html#load-xyz-coordinates"><i class="fa fa-check"></i><b>3.2</b> Load XYZ coordinates</a></li>
+<li class="chapter" data-level="3.3" data-path="xyt-matchup.html"><a href="xyt-matchup.html#select-the-dataset-and-download-its-metadata"><i class="fa fa-check"></i><b>3.3</b> Select the dataset and download its metadata</a></li>
+<li class="chapter" data-level="3.4" data-path="xyt-matchup.html"><a href="xyt-matchup.html#extract-the-satellite-data"><i class="fa fa-check"></i><b>3.4</b> Extract the satellite data</a></li>
+<li class="chapter" data-level="3.5" data-path="xyt-matchup.html"><a href="xyt-matchup.html#plot-the-data-onto-a-map"><i class="fa fa-check"></i><b>3.5</b> Plot the data onto a map</a></li>
+<li class="chapter" data-level="3.6" data-path="xyt-matchup.html"><a href="xyt-matchup.html#try-this-on-your-own"><i class="fa fa-check"></i><b>3.6</b> Try this on your own</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="timeseries-chl.html"><a href="timeseries-chl.html"><i class="fa fa-check"></i><b>4</b> Create and plot timeseries</a><ul>
+<li class="chapter" data-level="4.1" data-path="timeseries-chl.html"><a href="timeseries-chl.html#install-required-packages-and-load-libraries-1"><i class="fa fa-check"></i><b>4.1</b> Install required packages and load libraries</a></li>
+<li class="chapter" data-level="4.2" data-path="timeseries-chl.html"><a href="timeseries-chl.html#define-the-area-boundaries"><i class="fa fa-check"></i><b>4.2</b> Define the area boundaries</a></li>
+<li class="chapter" data-level="4.3" data-path="timeseries-chl.html"><a href="timeseries-chl.html#extract-satellite-data-with-rxtracto_3d"><i class="fa fa-check"></i><b>4.3</b> Extract satellite data with rxtracto_3D</a><ul>
+<li><a href="timeseries-chl.html#get-the-seawifs-data-now-get-modis-data"><span class="toc-section-number">4.3.1</span> Get the SeaWiFS data**<br />
+### Now get MODIS data</a></li>
+<li class="chapter" data-level="4.3.2" data-path="timeseries-chl.html"><a href="timeseries-chl.html#now-get-viirs-data"><i class="fa fa-check"></i><b>4.3.2</b> Now get VIIRS data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="timeseries-chl.html"><a href="timeseries-chl.html#create-timeseries-of-mean-montly-data"><i class="fa fa-check"></i><b>4.4</b> Create timeseries of mean montly data</a></li>
+<li class="chapter" data-level="4.5" data-path="timeseries-chl.html"><a href="timeseries-chl.html#plot-time-series"><i class="fa fa-check"></i><b>4.5</b> Plot time series</a></li>
+<li class="chapter" data-level="4.6" data-path="timeseries-chl.html"><a href="timeseries-chl.html#now-add-esa-occi-data"><i class="fa fa-check"></i><b>4.6</b> Now add ESA OCCI Data</a></li>
+<li class="chapter" data-level="4.7" data-path="timeseries-chl.html"><a href="timeseries-chl.html#make-maps-of-the-average-chlorophyll-for-each-satellite-mission"><i class="fa fa-check"></i><b>4.7</b> Make maps of the average chlorophyll for each satellite mission</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sst-buoy.html"><a href="sst-buoy.html"><i class="fa fa-check"></i><b>5</b> Matchup satellite and buoy data</a><ul>
+<li class="chapter" data-level="5.1" data-path="sst-buoy.html"><a href="sst-buoy.html#install-required-packages-and-load-libraries-2"><i class="fa fa-check"></i><b>5.1</b> Install required packages and load libraries</a></li>
+<li class="chapter" data-level="5.2" data-path="sst-buoy.html"><a href="sst-buoy.html#extract-buoy-data-from-erddap"><i class="fa fa-check"></i><b>5.2</b> Extract buoy data from ERDDAP</a></li>
+<li class="chapter" data-level="5.3" data-path="sst-buoy.html"><a href="sst-buoy.html#extract-sst-satellite-data-for-matchups-to-buoy-data.-compare-results-for-satellite-and-buoy-create-a-satellite-map-and-overlay-buoy-data"><i class="fa fa-check"></i><b>5.3</b> Extract SST satellite data for matchups to buoy data.** ## Compare results for satellite and buoy ## Create a satellite map and overlay buoy data</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="turtlewatch.html"><a href="turtlewatch.html"><i class="fa fa-check"></i><b>6</b> TurtleWatch</a><ul>
+<li class="chapter" data-level="6.1" data-path="turtlewatch.html"><a href="turtlewatch.html#install-required-packages-and-load-libraries-3"><i class="fa fa-check"></i><b>6.1</b> Install required packages and load libraries</a></li>
+<li class="chapter" data-level="6.2" data-path="turtlewatch.html"><a href="turtlewatch.html#select-the-satellite-data"><i class="fa fa-check"></i><b>6.2</b> Select the Satellite Data</a></li>
+<li class="chapter" data-level="6.3" data-path="turtlewatch.html"><a href="turtlewatch.html#get-satellite-data"><i class="fa fa-check"></i><b>6.3</b> Get Satellite Data</a></li>
+<li class="chapter" data-level="6.4" data-path="turtlewatch.html"><a href="turtlewatch.html#make-a-quick-plot"><i class="fa fa-check"></i><b>6.4</b> Make a quick plot</a></li>
+<li class="chapter" data-level="6.5" data-path="turtlewatch.html"><a href="turtlewatch.html#defining-the-thermal-niche-of-loggerhead-turtles"><i class="fa fa-check"></i><b>6.5</b> DEFINING THE THERMAL NICHE OF LOGGERHEAD TURTLES</a></li>
+<li class="chapter" data-level="6.6" data-path="turtlewatch.html"><a href="turtlewatch.html#prepare-data-for-plotting"><i class="fa fa-check"></i><b>6.6</b> Prepare data for plotting</a></li>
+<li class="chapter" data-level="6.7" data-path="turtlewatch.html"><a href="turtlewatch.html#plot-the-data-1"><i class="fa fa-check"></i><b>6.7</b> Plot the Data</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://coastwatch.pfeg.noaa.gov" target="blank">Created by CoastWatch West Coast</a></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Exercises for the NOAA Satellite Course</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">R Exercises for the NOAA Satellite Course</h1>
+<p class="author"><em>Cara Wilson and Dale Robinson</em></p>
+<p class="date"><em>20 April 2019</em></p>
+</div>
+<div id="preface" class="section level1 unnumbered">
+<h1>Preface</h1>
+<p>These exercises are materials for the NOAA Satellite Training Course offered each year by regional nodes of NOAA’s CoastWatch program. They demonstrate techniques to extract data from the ERDDAP data servers using the rxtracto library written in R.</p>
+<div id="noaa-coastwatchoceanwatch-program" class="section level2 unnumbered">
+<h2>NOAA CoastWatch/OceanWatch Program</h2>
+<p>NOAA CoastWatch/OceanWatch provides easy access for everyone to global and regional satellite data products for use in understanding, managing and protecting ocean and coastal resources and for assessing impacts of environmental change in ecosystems, weather, and climate.</p>
+<p><img src="images/cw_logo_80.png" /> <span style="color:blue;font-size:30px;"><a href="https://coastwatch.noaa.gov/">CoastWatch</a></span></p>
+</div>
+<div id="coastwatch-west-coast-regional-node" class="section level2 unnumbered">
+<h2>CoastWatch West Coast Regional Node</h2>
+<p>These course materials were developed and are distributed by the <a href="https://coastwatch.pfeg.noaa.gov/">West Coast Node</a> of NOAA CoastWatch. Information about the courses and services offered by West Coast Node can be found at the following links:</p>
+<button>
+<a href="https://coastwatch.pfeg.noaa.gov/courses/satellite_course.html">Courses</a>
+</button>
+       
+<button>
+<a href="https://coastwatch.pfeg.noaa.gov/data.html">Data Catalog</a>
+</button>
+       
+<button>
+<a href="https://coastwatch.pfeg.noaa.gov/erddapinfo/index.html">Data Server</a>
+</button>
+       
+<button>
+<a href="https://coastwatch.pfeg.noaa.gov/xtracto/">Xtractomatic</a>
+</button>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="introduction.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
