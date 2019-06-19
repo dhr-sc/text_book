@@ -1,6 +1,4 @@
----
-permalink: /docs/index.html
----
+
 ## CoastWatch Satellite Course
 These exercises are materials for the NOAA Satellite Training Course offered each year by regional nodes of NOAA's CoastWatch program. They demonstrate techniques to extract data from the ERDDAP data servers using the rxtracto library written in R. 
 
