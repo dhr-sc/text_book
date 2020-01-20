@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Matchup satellite and buoy data | R Exercises for the NOAA Satellite Course</title>
+  <title>Chapter 7 Projected Datasets | R Exercises for the NOAA Satellite Course</title>
   <meta name="description" content="A complitation of R exercises used in the NOAA Satellite Course." />
   <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Matchup satellite and buoy data | R Exercises for the NOAA Satellite Course" />
+  <meta property="og:title" content="Chapter 7 Projected Datasets | R Exercises for the NOAA Satellite Course" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="http://coastwatch.pfeg.noaa.gov/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="dhr-sc" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Matchup satellite and buoy data | R Exercises for the NOAA Satellite Course" />
+  <meta name="twitter:title" content="Chapter 7 Projected Datasets | R Exercises for the NOAA Satellite Course" />
   
   <meta name="twitter:description" content="A complitation of R exercises used in the NOAA Satellite Course." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="timeseries-chl.html"/>
-<link rel="next" href="turtlewatch.html"/>
+<link rel="prev" href="turtlewatch.html"/>
+
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -202,7 +202,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="Projected.html"><a href="Projected.html"><i class="fa fa-check"></i><b>7</b> Projected Datasets</a><ul>
 <li class="chapter" data-level="7.1" data-path="Projected.html"><a href="Projected.html#install-required-packages-and-load-libraries-4"><i class="fa fa-check"></i><b>7.1</b> Install required packages and load libraries</a></li>
 <li class="chapter" data-level="7.2" data-path="Projected.html"><a href="Projected.html#download-the-sea-ice-concentration-data"><i class="fa fa-check"></i><b>7.2</b> Download the sea ice concentration data</a></li>
-<li class="chapter" data-level="7.3" data-path="Projected.html"><a href="Projected.html#make-a-maps-of-the-area"><i class="fa fa-check"></i><b>7.3</b> Make a maps of the area</a></li>
+<li class="chapter" data-level="7.3" data-path="Projected.html"><a href="Projected.html#make-maps-of-the-area"><i class="fa fa-check"></i><b>7.3</b> Make maps of the area</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://coastwatch.pfeg.noaa.gov" target="blank">Created by CoastWatch West Coast</a></li>
@@ -225,31 +225,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="sst-buoy" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Matchup satellite and buoy data</h1>
+<div id="Projected" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Projected Datasets</h1>
 <blockquote>
-<p>notebook filename | 05-sstbuoy.Rmd<br />
-history | converted to R notebook from SSTandBuoy.R</p>
+<p>notebook filename | 07_projected_dataset.Rmd<br />
+history | created August 2019</p>
 </blockquote>
-<p>In this exercise you will extract buoy data from ERDDAP tabular data and then extract satellite data that is coincident with the buoy data.</p>
+<p>This exercise works with a sea ice dataset served on PolarWatch (polarwatch.noaa.gov) that is projected, meaning their axis coordinates are given in meters from a central projection. The latitude and longitude grids for these datasets are served as a separate dataset that must be used if one wants to subset the data by latitude or longitude or to plot it using latitude and longitude.</p>
 <p>The exercise demonstrates the following techniques:</p>
 <ul>
-<li>Use the <strong>tabledap</strong> function to extract tabular data from ERDDAP<br />
+<li>Working with grids associated with a projected dataset</li>
+<li>Creating the URL data requests to download data from ERDDAP<br />
 </li>
-<li>Using <strong>xtracto</strong> to extract satellite data coincident with the buoy data<br />
-</li>
-<li>Using <strong>rxtracto_3D</strong> to extract satellite data for a rectangular area<br />
-</li>
-<li>Using <strong>rerddap</strong> to retrieve information about a dataset from ERDDAP<br />
-</li>
-<li>Producing xy scatter plots<br />
-</li>
-<li>Generating linear regressions<br />
-</li>
-<li>Producing satellite maps and overlaying buoy data</li>
+<li>Using the <strong>timeAverage</strong> function in the <strong>openair</strong> package to calculate annual statistics</li>
+<li>Using <strong>ggplot</strong> to plot timeseries of multiple sea ice variables</li>
+<li>Making various different maps of the projected data</li>
 </ul>
-<div id="install-required-packages-and-load-libraries-2" class="section level2">
-<h2><span class="header-section-number">5.1</span> Install required packages and load libraries</h2>
+<div id="install-required-packages-and-load-libraries-4" class="section level2">
+<h2><span class="header-section-number">7.1</span> Install required packages and load libraries</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Function to check if pkgs are installed, install missing pkgs, and load</span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">pkgTest &lt;-<span class="st"> </span><span class="cf">function</span>(x)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">{</a>
@@ -260,192 +253,249 @@ history | converted to R notebook from SSTandBuoy.R</p>
 <a class="sourceLine" id="cb1-8" data-line-number="8">  }</a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">}</a>
 <a class="sourceLine" id="cb1-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>( <span class="st">&quot;ncdf4&quot;</span>,<span class="st">&quot;parsedate&quot;</span>, <span class="st">&quot;rerddap&quot;</span>,<span class="st">&quot;plotdap&quot;</span>,<span class="st">&quot;sp&quot;</span>,<span class="st">&quot;rerddapXtracto&quot;</span>,<span class="st">&quot;httr&quot;</span>,</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">                       <span class="st">&quot;lubridate&quot;</span>, <span class="st">&quot;gridGraphics&quot;</span>,  <span class="st">&quot;mapdata&quot;</span>, <span class="st">&quot;cmocean&quot;</span>,</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">                       <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;RColorBrewer&quot;</span>, <span class="st">&quot;grid&quot;</span>, <span class="st">&quot;PBSmapping&quot;</span>)</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># create list of installed packages</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">pkges =<span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="cf">for</span> (pk <span class="cf">in</span> list.of.packages) {</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">  <span class="kw">pkgTest</span>(pk)</a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">}</a></code></pre></div>
+<a class="sourceLine" id="cb1-11" data-line-number="11">list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ncdf4&quot;</span>,<span class="st">&quot;openair&quot;</span>,<span class="st">&quot;ggplot2&quot;</span>,<span class="st">&quot;reshape2&quot;</span>,<span class="st">&quot;scales&quot;</span>,<span class="st">&quot;lubridate&quot;</span>,</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">                      <span class="st">&quot;cmocean&quot;</span>,<span class="st">&quot;maps&quot;</span>,<span class="st">&quot;mapdata&quot;</span>,<span class="st">&quot;rgdal&quot;</span>,<span class="st">&quot;raster&quot;</span>,<span class="st">&quot;RColorBrewer&quot;</span>)</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co"># create list of installed packages</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">pkges =<span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="cf">for</span> (pk <span class="cf">in</span> list.of.packages) {</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">  <span class="kw">pkgTest</span>(pk)</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">}</a></code></pre></div>
 </div>
-<div id="extract-buoy-data-from-erddap" class="section level2">
-<h2><span class="header-section-number">5.2</span> Extract buoy data from ERDDAP</h2>
-<p><strong>Extract data using the tabledap function</strong></p>
+<div id="download-the-sea-ice-concentration-data" class="section level2">
+<h2><span class="header-section-number">7.2</span> Download the sea ice concentration data</h2>
+<p>Subsetting the data from a projected dataset requires a few additional steps than most of the datasets you will find in ERDDAP.</p>
 <ul>
-<li>For every day in August 2018<br />
-</li>
-<li>In the region bounded by 30.86 to 41.75 north latitude and -128 to -116 east longitude<br />
-</li>
-<li>request the station, latitude, longitude, time, and water temperature parameters<br />
-</li>
-<li>put the data into a data frame</li>
+<li><p>Download from ERDDAP the 2D latitude and longitude grids that are associated with the projected dataset</p></li>
+<li><p>Find the x and y indices that correspond with your area of interest</p></li>
+<li><p>Use the indices to select the x and y coordinate axis ranges to generate the ERDDAP data request URL for the projected dataset</p></li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">buoy &lt;-<span class="st"> </span><span class="kw">tabledap</span>(</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="st">&#39;cwwcNDBCMet&#39;</span>, </a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">  <span class="dt">fields=</span><span class="kw">c</span>(<span class="st">&#39;station&#39;</span>, <span class="st">&#39;latitude&#39;</span>,  <span class="st">&#39;longitude&#39;</span>, <span class="st">&#39;time&#39;</span>, <span class="st">&#39;wtmp&#39;</span>), </a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">  <span class="st">&#39;time&gt;=2018-08-01&#39;</span>,   <span class="st">&#39;time&lt;=2018-08-13&#39;</span>, </a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="st">&#39;latitude&gt;=30.86&#39;</span>,<span class="st">&#39;latitude&lt;=41.75&#39;</span>, <span class="st">&#39;longitude&gt;=-128&#39;</span>,<span class="st">&#39;longitude&lt;=-116&#39;</span>,</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">  <span class="st">&#39;wtmp&gt;0&#39;</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#Create dataframe </span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">buoy.df &lt;-<span class="kw">data.frame</span>(<span class="dt">station=</span>buoy<span class="op">$</span>station,</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">                 <span class="dt">longitude=</span><span class="kw">as.numeric</span>(buoy<span class="op">$</span>longitude),</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">                 <span class="dt">latitude=</span><span class="kw">as.numeric</span>(buoy<span class="op">$</span>latitude),</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">                 <span class="dt">time=</span><span class="kw">strptime</span>(buoy<span class="op">$</span>time, <span class="st">&quot;%Y-%m-%dT%H:%M:%S&quot;</span>),</a>
-<a class="sourceLine" id="cb2-14" data-line-number="14">                 <span class="dt">sst=</span><span class="kw">as.numeric</span>(buoy<span class="op">$</span>wtmp))</a></code></pre></div>
-<p><strong>Isolate the unique stations</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Find out how many stations were retrieved</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">unique.sta &lt;-<span class="st"> </span><span class="kw">unique</span>(buoy<span class="op">$</span>sta)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">n.sta &lt;-<span class="st"> </span><span class="kw">length</span>(unique.sta)</a></code></pre></div>
-<p><strong>Select buoy data closest in time to satellite data</strong></p>
+<p>First look at the NSIDC sea ice concentration datasets that are available in the PolarWatch ERDDAP.</p>
 <ul>
-<li>Buoy data is hourly, but there is only one satellite value per day.<br />
-</li>
-<li>So subset buoy data to that taken as 22h00 GMT (2pm local + 8), which corresponds to when the satellite passes overhead.</li>
+<li>Go to the PolarWatch ERDDAP at <code>https://coastwatch.pfeg.noaa.gov/erddap/</code></li>
+<li>In the search box type “NSIDC” and click the &quot;Search’ button</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">dailybuoy &lt;-<span class="st"> </span><span class="kw">subset</span>(buoy.df,<span class="kw">hour</span>(time)<span class="op">==</span><span class="dv">22</span>)</a></code></pre></div>
+<p><img src="images/nsidc.png" alt="NSIDC search result" />
+A list of datasets will load, including:</p>
+<ul>
+<li>Near real-time data from the Northern and Southern Hemispheres</li>
+<li>Science Quality data from the Northern and Southern Hemispheres</li>
+<li>The latitude and longitude grid for the Arctic</li>
+</ul>
+<p>Use the science quality dataset for the Northern Hemisphere (ERDDAP ID = nsidcCDRiceSQnhmday) and the associated lat-lon 2D grid dataset for the Arctic (ERDDAP ID = nsidcCDRice_nh_grid). Clicking on the ‘data’ or ‘graph’ link to the left of the dataset listingwill bring up a page from which the url for a download of the data in a ncdf file can be obtained.</p>
+<div class="figure">
+<img src="images/ObtainURL.png" alt="Obtain URL for data download" />
+<p class="caption">Obtain URL for data download</p>
 </div>
-<div id="extract-sst-satellite-data-for-matchups-to-buoy-data." class="section level2">
-<h2><span class="header-section-number">5.3</span> Extract SST satellite data for matchups to buoy data.</h2>
-<p><strong>Examine the metadata for the VIIRS monthly dataset (ID = erdVHsstaWS3day)</strong><br />
-<strong>The script below:</strong></p>
+<p><strong>Determine what values of xgrid and ygrid correspond to the desired latitude and longitude boundaries</strong></p>
 <ul>
-<li>Gathers metadata by using the <strong>rerddap::info</strong> function</li>
-<li>Display the information</li>
+<li>From within R construct a URL data request using the dataset id ‘nsidcCDRice_nh_grid.’</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Select VIIRS dataset and get information about the dataset </span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;erdVHsstaWS3day&#39;</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">dataInfo</a></code></pre></div>
-<pre><code>## &lt;ERDDAP info&gt; erdVHsstaWS3day 
-##  Base URL: https://upwell.pfeg.noaa.gov/erddap/ 
-##  Dimensions (range):  
-##      time: (2014-11-02T12:00:00Z, 2020-01-16T12:00:00Z) 
-##      altitude: (0.0, 0.0) 
-##      latitude: (30.860437023511412, 41.753893186176605) 
-##      longitude: (-128.2508393601582, -114.7491606398418) 
-##  Variables:  
-##      nobs: 
-##      sst: 
-##          Units: degree_C</code></pre>
-<p><strong>Extact the matchup data using rxtracto</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">url &lt;-<span class="st"> &#39;https://polarwatch.noaa.gov/erddap/griddap/&#39;</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">gridid &lt;-<span class="st"> &#39;nsidcCDRice_nh_grid&#39;</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">urlcall &lt;-<span class="st"> </span><span class="kw">paste0</span>(url,gridid,<span class="st">&#39;.nc?longitude[(5812500.0):1:(-5337500.0)][(-3837500.0):1:(3737500.0)],latitude[(5812500.0):1:(-5337500.0)][(-3837500.0):1:(3737500.0)]&#39;</span>)</a></code></pre></div>
 <ul>
-<li>Use the variable name in dataInfo for the parameter argument</li>
-<li>Use the longitude, latitude, and time coordinates from dailybuoy to set xcoord, ycoord, and tcoord</li>
-<li>This dataset has a altitude dimension, so add a vector of zeros, one for each matchup</li>
-<li>Run rxtracto</li>
+<li>Download the netCDF file</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">parameter &lt;-<span class="st"> &#39;sst&#39;</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">xcoord &lt;-<span class="st"> </span>dailybuoy<span class="op">$</span>longitude</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">ycoord &lt;-<span class="st"> </span>dailybuoy<span class="op">$</span>latitude</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">tcoord &lt;-<span class="st"> </span>dailybuoy<span class="op">$</span>time</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">zcoord &lt;-<span class="st"> </span>ycoord<span class="op">*</span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">extract &lt;-<span class="st"> </span><span class="kw">rxtracto</span>(dataInfo, <span class="dt">parameter=</span>parameter, </a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">                    <span class="dt">tcoord=</span>tcoord,</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">                    <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord,<span class="dt">zcoord=</span>zcoord,</a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">                    <span class="dt">xlen=</span>.<span class="dv">01</span>,<span class="dt">ylen=</span>.<span class="dv">01</span>)</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">                     </a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">dailybuoy<span class="op">$</span>viirs&lt;-extract<span class="op">$</span><span class="st">`</span><span class="dt">mean sst</span><span class="st">`</span></a></code></pre></div>
-<p><strong>Get subset of data where there is a satellite value was found</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">test1 &lt;-<span class="st"> </span><span class="kw">download.file</span>(urlcall,<span class="dt">destfile=</span><span class="st">&quot;test1.nc&quot;</span>,<span class="dt">mode=</span><span class="st">&#39;wb&#39;</span>)</a></code></pre></div>
 <ul>
-<li>Not all matchup will yield data, for example due to cloud cover.</li>
+<li>Read the downloaded netCDF file and load data into variables</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Get subset of data where there is a satellite value </span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">goodbuoy&lt;-<span class="kw">subset</span>(dailybuoy, viirs <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">unique.sta&lt;-<span class="kw">unique</span>(goodbuoy<span class="op">$</span>sta)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">nbuoy&lt;-<span class="kw">length</span>(unique.sta)</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">ndata&lt;-<span class="kw">length</span>(goodbuoy<span class="op">$</span>sta)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">datafileID&lt;-<span class="kw">nc_open</span>(<span class="st">&#39;test1.nc&#39;</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">ygrid &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;ygrid&quot;</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">xgrid &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;xgrid&quot;</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">longitude &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;longitude&quot;</span>)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">latitude &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;latitude&quot;</span>)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="kw">nc_close</span>(datafileID)</a></code></pre></div>
+<ul>
+<li>Determine which indices in the latitude array to use</li>
+</ul>
+<p>For this example we are interested in all data within the Arctic Circle, i.e. north of 66.5N, so select for values greater than or equal to 66.5°. To subset by longitude as well we would have to include longitude in this query as well.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">inds =<span class="st"> </span><span class="kw">which</span>(latitude <span class="op">&gt;</span><span class="st"> </span><span class="fl">66.5</span>, <span class="dt">arr.ind=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">rowrange &lt;-<span class="st"> </span><span class="kw">range</span>(inds[,<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">colrange &lt;-<span class="st"> </span><span class="kw">range</span>(inds[,<span class="dv">2</span>])</a></code></pre></div>
+<p><strong>Subset the sea ice concentration dataset using indices</strong></p>
+<p>Use the science quality dataset for the Northern Hemisphere (ERDDAO ID = nsidcCDRiceSQnhmday). There are four different sea ice variables in this dataset. Downloading all of them requires adding to the URL the name of each variable followed by the date and coordinate constraints. If you need a refresher on the structure of the URL call, go to the erddap “Data Access Form” for a dataset and use the ‘generate the URL’ button.</p>
+<ul>
+<li>Generate a URL data request using the indices</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">dataid &lt;-<span class="st"> &#39;nsidcCDRiceSQnhmday&#39;</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">varnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;seaice_conc_monthly_cdr&#39;</span>,<span class="st">&#39;goddard_merged_seaice_conc_monthly&#39;</span>,<span class="st">&#39;goddard_nt_seaice_conc_monthly&#39;</span>,<span class="st">&#39;goddard_bt_seaice_conc_monthly&#39;</span>)</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">datestring &lt;-<span class="st"> &#39;[(1997-01-16T00:00:00Z):1:(2017-12-16T00:00:00Z)]&#39;</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">coordstring &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;[&#39;</span>,colrange[<span class="dv">1</span>],<span class="st">&#39;:1:&#39;</span>,colrange[<span class="dv">2</span>],<span class="st">&#39;][&#39;</span>,rowrange[<span class="dv">1</span>],<span class="st">&#39;:1:&#39;</span>,rowrange[<span class="dv">2</span>],<span class="st">&#39;]&#39;</span>)</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(varnames)) {</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  <span class="cf">if</span> (i <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {urlcall &lt;-<span class="st"> </span><span class="kw">paste0</span>(url,dataid,<span class="st">&#39;.nc?&#39;</span>,varnames[i],datestring,coordstring)} </a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">  <span class="cf">else</span> {urlcall &lt;-<span class="st"> </span><span class="kw">paste0</span>(urlcall,<span class="st">&#39;,&#39;</span>,varnames[i],datestring,coordstring)}</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">}</a></code></pre></div>
+<ul>
+<li>Download the netCDF file (this will take a few minutes)</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">test2 &lt;-<span class="st"> </span><span class="kw">download.file</span>(urlcall,<span class="dt">destfile=</span><span class="st">&quot;test2.nc&quot;</span>,<span class="dt">mode=</span><span class="st">&#39;wb&#39;</span>)</a></code></pre></div>
+<ul>
+<li>Read the netCDF file and load the data into variables</li>
+</ul>
+<p>For simplicity rename the 4 different sea ice datasets seaice1 - seaice4</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">datafileID&lt;-<span class="kw">nc_open</span>(<span class="st">&#39;test2.nc&#39;</span>)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">datatime&lt;-<span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;time&quot;</span>)</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">datatime&lt;-<span class="kw">as.Date</span>(<span class="kw">as.POSIXlt</span>(datatime,<span class="dt">origin=</span><span class="st">&#39;1970-01-01&#39;</span>,<span class="dt">tz=</span> <span class="st">&quot;GMT&quot;</span>))</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">ygrid &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;ygrid&quot;</span>)</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">xgrid &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;xgrid&quot;</span>)</a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">seaice1 &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span>varnames[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">seaice2 &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span>varnames[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb8-9" data-line-number="9">seaice3 &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span>varnames[<span class="dv">3</span>])</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">seaice4 &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span>varnames[<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb8-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="kw">nc_close</span>(datafileID)</a></code></pre></div>
+<p><strong>Count occurrences where seaice &gt; 0.6 and &lt;=1</strong></p>
+<p>Since each pixel in this grid is 25 km2, the area of ice coverage is a multiple of the occurrences of non-NA values.</p>
+<p>See description of methodology at <a href="https://stackoverflow.com/questions/30292373/r-count-occurrences-on-a-multidimensional-array" class="uri">https://stackoverflow.com/questions/30292373/r-count-occurrences-on-a-multidimensional-array</a></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">threshold &lt;-<span class="st"> </span><span class="fl">.6</span> </a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">icearea1 &lt;-<span class="st"> </span><span class="dv">25</span><span class="op">*</span><span class="dv">25</span><span class="op">*</span><span class="kw">apply</span>(seaice1,<span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(slice) <span class="kw">sum</span>(slice<span class="op">&gt;</span>threshold <span class="op">&amp;</span><span class="st"> </span>slice<span class="op">&lt;=</span><span class="dv">1</span>,<span class="dt">na.rm=</span>T))</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">icearea2 &lt;-<span class="st"> </span><span class="dv">25</span><span class="op">*</span><span class="dv">25</span><span class="op">*</span><span class="kw">apply</span>(seaice2,<span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(slice) <span class="kw">sum</span>(slice<span class="op">&gt;</span>threshold <span class="op">&amp;</span><span class="st"> </span>slice<span class="op">&lt;=</span><span class="dv">1</span>,<span class="dt">na.rm=</span>T))</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">icearea3 &lt;-<span class="st"> </span><span class="dv">25</span><span class="op">*</span><span class="dv">25</span><span class="op">*</span><span class="kw">apply</span>(seaice3,<span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(slice) <span class="kw">sum</span>(slice<span class="op">&gt;</span>threshold <span class="op">&amp;</span><span class="st"> </span>slice<span class="op">&lt;=</span><span class="dv">1</span>,<span class="dt">na.rm=</span>T))</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">icearea4 &lt;-<span class="st"> </span><span class="dv">25</span><span class="op">*</span><span class="dv">25</span><span class="op">*</span><span class="kw">apply</span>(seaice4,<span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(slice) <span class="kw">sum</span>(slice<span class="op">&gt;</span>threshold <span class="op">&amp;</span><span class="st"> </span>slice<span class="op">&lt;=</span><span class="dv">1</span>,<span class="dt">na.rm=</span>T))</a></code></pre></div>
+<p><strong>Make a quick plot of the data using base graphics</strong></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">plot</span>(datatime,icearea1,<span class="dt">type=</span><span class="st">&#39;l&#39;</span>,<span class="dt">col=</span><span class="st">&quot;black&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Ice Area (km^2)&quot;</span>)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">lines</span>(datatime,icearea2,<span class="dt">type=</span><span class="st">&#39;l&#39;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw">lines</span>(datatime,icearea3,<span class="dt">type=</span><span class="st">&#39;l&#39;</span>,<span class="dt">col=</span><span class="st">&quot;green&quot;</span>)</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw">lines</span>(datatime,icearea4,<span class="dt">type=</span><span class="st">&#39;l&#39;</span>,<span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</a></code></pre></div>
+<p><img src="07_Projected_Datasets_files/figure-html/quickplot-1.png" width="672" /></p>
+<p>Not surprisingly the data is dominated by the seasonal cycle. Since most of the datasets have virtually identical values it can appear as if some of the datasets are not being plotted, but they have just been plotted over one another. The seasonal minima seems to have more interannual variations so calculate seasonal minima for each dataset.</p>
+<p>Use the <code>timeAverag</code> function of the <code>openair package</code>, but first write all the variables into one dataframe.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">ice.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">date=</span>datatime,<span class="dt">icearea1=</span>icearea1,<span class="dt">icearea2=</span>icearea2,<span class="dt">icearea3=</span>icearea3,<span class="dt">icearea4=</span>icearea4)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">annualmin &lt;-<span class="st">  </span><span class="kw">timeAverage</span>(ice.df,<span class="dt">avg.time =</span> <span class="st">&quot;year&quot;</span>,<span class="dt">statistic =</span> <span class="st">&quot;min&quot;</span>)</a></code></pre></div>
+<p><strong>Plot using ggplot</strong></p>
+<ul>
+<li>Reshape the dataframe to plot the data more easily with ggplot</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">annualmin2 &lt;-<span class="st"> </span><span class="kw">melt</span>(annualmin,  <span class="dt">id.vars =</span> <span class="st">&#39;date&#39;</span>, <span class="dt">variable.name =</span> <span class="st">&#39;Datasets&#39;</span>)</a></code></pre></div>
+<ul>
+<li>Plot the data all on one graph</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">ggplot</span>(annualmin2, <span class="kw">aes</span>(date,value)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">colour =</span> Datasets)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">                                    </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Ice Area (km^2)&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">                                    </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>comma)</a></code></pre></div>
+<p><img src="07_Projected_Datasets_files/figure-html/graphall-1.png" width="672" /></p>
+<ul>
+<li>Plot the data on different graphs</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">ggplot</span>(annualmin2, <span class="kw">aes</span>(date,value)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(Datasets <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="st">                                     </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Ice Area (km^2)&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="st">                                     </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>comma)</a></code></pre></div>
+<p><img src="07_Projected_Datasets_files/figure-html/graph2-1.png" width="672" /></p>
 </div>
-<div id="compare-results-for-satellite-and-buoy" class="section level2">
-<h2><span class="header-section-number">5.4</span> Compare results for satellite and buoy</h2>
+<div id="make-maps-of-the-area" class="section level2">
+<h2><span class="header-section-number">7.3</span> Make maps of the area</h2>
+<p>The exercise will demonstrate four different ways to map the data, because with R there is always more than one way to do things!</p>
+<p>First, download the latitude and longitude grids for our subsetted dataset, using the same coordinate string used for the data download.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">urlcall &lt;-<span class="st"> </span><span class="kw">paste0</span>(url,gridid,<span class="st">&#39;.nc?longitude&#39;</span>,coordstring,<span class="st">&#39;,latitude&#39;</span>,coordstring) </a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">test3 &lt;-<span class="st"> </span><span class="kw">download.file</span>(urlcall,<span class="dt">destfile=</span><span class="st">&quot;test3.nc&quot;</span>,<span class="dt">mode=</span><span class="st">&#39;wb&#39;</span>)</a></code></pre></div>
+<p><strong>Read and format the data</strong></p>
 <ul>
-<li>Plot the VIIRS satellite verses the buoy data to visualize how well the two datasets track each other.</li>
+<li>Load the data from the netCDF file</li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># Set up map title </span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">main=<span class="st">&quot;California coast, 8/1/18-8/13/18&quot;</span>   </a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(goodbuoy, <span class="kw">aes</span>(sst, viirs,<span class="dt">color=</span>latitude)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">     </span><span class="kw">coord_fixed</span>(<span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">25</span>),<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">8</span>,<span class="dv">25</span>)) </a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">p <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;VIIRS SST&#39;</span>)  <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;NDBC Buoy SST @ 2pm&#39;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">minor_breaks =</span> <span class="kw">seq</span>(<span class="dv">8</span>, <span class="dv">25</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">minor_breaks =</span> <span class="kw">seq</span>(<span class="dv">8</span>, <span class="dv">25</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="st">  </span><span class="co">#geom_abline(a=fit[1],b=fit[2]) +</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="st">  </span><span class="co">#annotation_custom(my_grob) + </span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="st">  </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">cmocean</span>(<span class="st">&#39;dense&#39;</span>)(<span class="dv">12</span>), <span class="dt">name=</span><span class="st">&quot;Buoy</span><span class="ch">\n</span><span class="st">Latitude&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span>main) <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">25</span>, <span class="dt">face=</span><span class="st">&quot;bold&quot;</span>, <span class="dt">vjust=</span><span class="dv">2</span>)) </a></code></pre></div>
-<p><img src="05-sstbuoy_files/figure-html/xyplot-1.png" width="672" /></p>
-<p>Run a linear regression of VIIRS satellite verses the buoy data.
-* The R squared in close to 1 (0.9807)
-* The slope is near 1 (0.950711)</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">lmHeight =<span class="st"> </span><span class="kw">lm</span>(viirs<span class="op">~</span>sst, <span class="dt">data =</span> goodbuoy)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">summary</span>(lmHeight)</a></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = viirs ~ sst, data = goodbuoy)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.4964 -0.4086  0.0312  0.4499  2.3933 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.955247   0.139463   6.849 2.97e-11 ***
-## sst         0.951597   0.006893 138.059  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.6998 on 383 degrees of freedom
-## Multiple R-squared:  0.9803, Adjusted R-squared:  0.9803 
-## F-statistic: 1.906e+04 on 1 and 383 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div id="create-a-satellite-map-and-overlay-buoy-data" class="section level2">
-<h2><span class="header-section-number">5.5</span> Create a satellite map and overlay buoy data</h2>
-<p><strong>Extract VIIRS chlorophyll data for the month of August 2018</strong></p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># First define the box and time limits of the requested data </span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">ylim&lt;-<span class="kw">c</span>(<span class="fl">30.87</span>,<span class="fl">41.75</span>)</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">xlim&lt;-<span class="kw">c</span>(<span class="op">-</span><span class="dv">128</span>,<span class="op">-</span><span class="dv">115</span>)</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co"># Extract the monthly satellite data</span></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">SST &lt;-<span class="st"> </span><span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">xcoord=</span>xlim,<span class="dt">ycoord=</span>ylim,<span class="dt">parameter=</span>parameter, </a>
-<a class="sourceLine" id="cb12-7" data-line-number="7">                   <span class="dt">tcoord=</span><span class="kw">c</span>(<span class="st">&#39;2018-08-06&#39;</span>,<span class="st">&#39;2018-08-06&#39;</span>),<span class="dt">zcoord=</span>zcoord)</a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9">SST<span class="op">$</span>sst &lt;-<span class="st"> </span><span class="kw">drop</span>(SST<span class="op">$</span>sst)</a></code></pre></div>
-<p><strong>Create the map frame for the satellite data and buoy SST overlay</strong></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">mapFrame&lt;-<span class="st"> </span><span class="cf">function</span>(longitude,latitude,sst){</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">  dims&lt;-<span class="kw">dim</span>(sst)</a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">  sst&lt;-<span class="kw">array</span>(sst,dims[<span class="dv">1</span>]<span class="op">*</span>dims[<span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">  sstFrame&lt;-<span class="kw">expand.grid</span>(<span class="dt">x=</span>longitude,<span class="dt">y=</span>latitude)</a>
-<a class="sourceLine" id="cb13-5" data-line-number="5">  sstFrame<span class="op">$</span>sst&lt;-sst</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6">  <span class="kw">return</span>(sstFrame)</a>
-<a class="sourceLine" id="cb13-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb13-9" data-line-number="9">sstFrame&lt;-<span class="kw">mapFrame</span>(SST<span class="op">$</span>longitude,SST<span class="op">$</span>latitude,SST<span class="op">$</span>sst)</a>
-<a class="sourceLine" id="cb13-10" data-line-number="10">coast &lt;-<span class="st"> </span><span class="kw">map_data</span>(<span class="st">&quot;worldHires&quot;</span>, <span class="dt">ylim =</span> ylim, <span class="dt">xlim =</span> xlim)</a>
-<a class="sourceLine" id="cb13-11" data-line-number="11">my.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">rev</span>(<span class="kw">brewer.pal</span>(<span class="dv">11</span>, <span class="st">&quot;RdYlBu&quot;</span>)))(<span class="dv">22-13</span>) </a>
-<a class="sourceLine" id="cb13-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb13-13" data-line-number="13">buoy2&lt;-<span class="kw">subset</span>(dailybuoy, <span class="kw">month</span>(time)<span class="op">==</span><span class="dv">8</span> <span class="op">&amp;</span><span class="kw">day</span>(time)<span class="op">==</span><span class="dv">5</span> <span class="op">&amp;</span><span class="st"> </span>sst <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
-<p><strong>Create the map</strong></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">myplot&lt;-<span class="kw">ggplot</span>(<span class="dt">data =</span> sstFrame, <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">fill =</span> sst)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">na.rm=</span>T) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_polygon</span>(<span class="dt">data =</span> coast, <span class="kw">aes</span>(<span class="dt">x=</span>long, <span class="dt">y =</span> lat, <span class="dt">group =</span> group), <span class="dt">fill =</span> <span class="st">&quot;grey80&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="st">  </span><span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="st">  </span><span class="kw">coord_fixed</span>(<span class="fl">1.3</span>,<span class="dt">xlim =</span> xlim, <span class="dt">ylim =</span> ylim) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colours =</span> <span class="kw">cmocean</span>(<span class="st">&#39;thermal&#39;</span>)(<span class="dv">12</span>),<span class="dt">limits=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">25</span>),<span class="dt">na.value =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="kw">paste</span>(<span class="st">&quot;VIIRS and NDBC buoy SST </span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="kw">unique</span>(<span class="kw">as.Date</span>(SST<span class="op">$</span>time)))) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>buoy2, <span class="kw">aes</span>(<span class="dt">x=</span>longitude,<span class="dt">y=</span>latitude,<span class="dt">color=</span>sst),<span class="dt">size=</span><span class="dv">3</span>,<span class="dt">shape=</span><span class="dv">21</span>,<span class="dt">color=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">cmocean</span>(<span class="st">&#39;thermal&#39;</span>)(<span class="dv">12</span>),<span class="dt">limits=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">25</span>),<span class="dt">na.value =</span><span class="st">&quot;grey20&quot;</span>, <span class="dt">guide=</span><span class="ot">FALSE</span>) </a>
-<a class="sourceLine" id="cb14-10" data-line-number="10">  </a>
-<a class="sourceLine" id="cb14-11" data-line-number="11">myplot</a></code></pre></div>
-<p><img src="05-sstbuoy_files/figure-html/map-1.png" width="672" /></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">datafileID&lt;-<span class="kw">nc_open</span>(<span class="st">&#39;test3.nc&#39;</span>)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">ygrid &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;ygrid&quot;</span>)</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">xgrid &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;xgrid&quot;</span>)</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">longitude &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;longitude&quot;</span>)</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">latitude &lt;-<span class="st"> </span><span class="kw">ncvar_get</span>(datafileID, <span class="dt">varid=</span><span class="st">&quot;latitude&quot;</span>)</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb16-8" data-line-number="8"><span class="kw">nc_close</span>(datafileID)</a></code></pre></div>
+<ul>
+<li>Choose a date to use for the map and determine the index value for the date</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">plotdate &lt;-<span class="st"> &#39;2017-12-01&#39;</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">idate =<span class="st"> </span><span class="kw">which</span>((<span class="kw">month</span>(datatime)<span class="op">==</span><span class="kw">month</span>(plotdate)) <span class="op">&amp;</span><span class="st"> </span>(<span class="kw">year</span>(datatime)<span class="op">==</span><span class="kw">year</span>(plotdate)))</a></code></pre></div>
+<ul>
+<li>Make a long-format dataframe for that time period to use with ggplot</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">dims &lt;-<span class="st"> </span><span class="kw">dim</span>(longitude)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">icemap.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Longitude=</span><span class="kw">array</span>(longitude,dims[<span class="dv">1</span>]<span class="op">*</span>dims[<span class="dv">2</span>]),</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">                        <span class="dt">Latitude=</span><span class="kw">array</span>(latitude,dims[<span class="dv">1</span>]<span class="op">*</span>dims[<span class="dv">2</span>]))</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">icemap.df<span class="op">$</span>Seaice &lt;-<span class="st"> </span><span class="kw">array</span>(seaice1[,,idate],dims[<span class="dv">1</span>]<span class="op">*</span>dims[<span class="dv">2</span>])</a></code></pre></div>
+<ul>
+<li>Change the No_fill value from 2.54 to NA</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">icemap.df<span class="op">$</span>Seaice[icemap.df<span class="op">$</span>Seaice <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="ot">NA</span> </a></code></pre></div>
+<p><strong>First map the data on a geographical grid, just for kicks</strong></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Longitude, <span class="dt">y =</span> Latitude), <span class="dt">data =</span> icemap.df) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="st">       </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>Seaice)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="st">       </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours=</span><span class="kw">rev</span>(<span class="kw">brewer.pal</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">name =</span> <span class="st">&quot;Blues&quot;</span>)),<span class="dt">na.value=</span><span class="st">&quot;black&quot;</span>) </a></code></pre></div>
+<p><img src="07_Projected_Datasets_files/figure-html/map1-1.png" width="672" /></p>
+<p>The map should show only the area north of the Arctic Circle (66.5°N), confirming that the data was properly extracted.</p>
+<p><strong>Now map the data using polar coordinates</strong></p>
+<p>Follow the example given at <a href="https://www.r-bloggers.com/drawing-polar-centered-spatial-maps-using-ggplot2/" class="uri">https://www.r-bloggers.com/drawing-polar-centered-spatial-maps-using-ggplot2/</a>
+but note that the opts function has been deprecated, and theme is now used instead.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># 1 degree resolution</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">x_cell_lim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">180</span>, <span class="dv">-180</span>) <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">-1</span>) <span class="op">*</span><span class="st"> </span>res<span class="op">/</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">y_cell_lim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">90</span>, <span class="dv">70</span>) <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">-1</span>) <span class="op">*</span><span class="st"> </span>res<span class="op">/</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"> </a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Longitude, <span class="dt">y =</span> Latitude), <span class="dt">data =</span> icemap.df) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6"><span class="st">       </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>Seaice)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="st">       </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours=</span><span class="kw">rev</span>(<span class="kw">brewer.pal</span>(<span class="dt">n =</span> <span class="dv">5</span>,  <span class="dt">name=</span><span class="st">&quot;Blues&quot;</span>)),<span class="dt">na.value=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="st">      </span><span class="kw">coord_polar</span>(<span class="dt">start =</span> <span class="op">-</span>pi<span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="st">       </span><span class="kw">xlim</span>(x_cell_lim) <span class="op">+</span><span class="st"> </span><span class="kw">ylim</span>(y_cell_lim) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="st">       </span><span class="kw">theme</span>(<span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>(), <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(), </a>
+<a class="sourceLine" id="cb21-11" data-line-number="11">       <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), <span class="dt">axis.text.y =</span> <span class="kw">element_blank</span>(), </a>
+<a class="sourceLine" id="cb21-12" data-line-number="12">       <span class="dt">panel.border =</span> <span class="kw">element_blank</span>())</a></code></pre></div>
+<pre><code>## Warning: Removed 17112 rows containing missing values (geom_point).</code></pre>
+<p><img src="07_Projected_Datasets_files/figure-html/map2-1.png" width="672" /></p>
+<p><strong>Try mapping using a different method</strong></p>
+<p>Following example at <a href="https://stackoverflow.com/questions/48816773/polar-stereographic-map-in-r" class="uri">https://stackoverflow.com/questions/48816773/polar-stereographic-map-in-r</a></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">data</span>(<span class="st">&quot;wrld_simpl&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;maptools&quot;</span>)                                                                            </a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="co"># wm &lt;- raster::crop(wrld_simpl, raster::extent(-180, 180, 60, 90))</span></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">wm &lt;-<span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">map_data</span>(wrld_simpl)</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb23-5" data-line-number="5"><span class="co">#wm &lt;- wrld_simpl</span></a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">x_lines &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">120</span>,<span class="dv">180</span>, <span class="dt">by =</span> <span class="dv">60</span>)</a>
+<a class="sourceLine" id="cb23-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb23-8" data-line-number="8"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-9" data-line-number="9"><span class="st">  </span><span class="kw">geom_polygon</span>(<span class="dt">data =</span> wm, <span class="kw">aes</span>(<span class="dt">x =</span> long, <span class="dt">y =</span> lat, <span class="dt">group =</span> group), </a>
+<a class="sourceLine" id="cb23-10" data-line-number="10">               <span class="dt">fill =</span> <span class="st">&quot;grey&quot;</span>, <span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">alpha =</span> <span class="fl">0.8</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-11" data-line-number="11"><span class="st"> </span><span class="co"># Add data overlay </span></a>
+<a class="sourceLine" id="cb23-12" data-line-number="12"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>icemap.df, <span class="kw">aes</span>(<span class="dt">x =</span> Longitude, <span class="dt">y =</span> Latitude, <span class="dt">color=</span>Seaice)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-13" data-line-number="13"><span class="st">       </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours=</span><span class="kw">rev</span>(<span class="kw">brewer.pal</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">name =</span> <span class="st">&quot;Blues&quot;</span>)),<span class="dt">na.value=</span><span class="st">&quot;black&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-14" data-line-number="14"><span class="st">  </span><span class="co"># Convert to polar coordinates</span></a>
+<a class="sourceLine" id="cb23-15" data-line-number="15"><span class="st">  </span><span class="kw">coord_map</span>(<span class="st">&quot;ortho&quot;</span>, <span class="dt">orientation =</span> <span class="kw">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">180</span>, <span class="dv">180</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">60</span>, <span class="dv">90</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-16" data-line-number="16"><span class="st">  </span><span class="co">#coord_map(&quot;ortho&quot;, orientation = c(90, 0, 0)) +</span></a>
+<a class="sourceLine" id="cb23-17" data-line-number="17"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">60</span>, <span class="dv">90</span>, <span class="dt">by =</span> <span class="dv">5</span>), <span class="dt">labels =</span> <span class="ot">NULL</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb23-19" data-line-number="19"><span class="st">  </span><span class="co"># Removes Axes and labels</span></a>
+<a class="sourceLine" id="cb23-20" data-line-number="20"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="ot">NULL</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-21" data-line-number="21"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-22" data-line-number="22"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb23-24" data-line-number="24"><span class="st">  </span><span class="co"># Adds labels</span></a>
+<a class="sourceLine" id="cb23-25" data-line-number="25"><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x_lines, <span class="dt">y =</span> <span class="dv">55</span>, <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;120°W&quot;</span>, <span class="st">&quot;60°W&quot;</span>, <span class="st">&quot;0°&quot;</span>, <span class="st">&quot;60°E&quot;</span>, <span class="st">&quot;120°E&quot;</span>, <span class="st">&quot;180°W&quot;</span>))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb23-27" data-line-number="27"><span class="st">  </span><span class="co"># Adds axes</span></a>
+<a class="sourceLine" id="cb23-28" data-line-number="28"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="kw">aes</span>(<span class="dt">yintercept =</span> <span class="dv">60</span>), <span class="dt">size =</span> <span class="dv">1</span>)  <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-29" data-line-number="29"><span class="st">  </span><span class="kw">geom_segment</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="dv">60</span>, <span class="dt">yend =</span> <span class="dv">90</span>, <span class="dt">x =</span> x_lines, <span class="dt">xend =</span> x_lines), <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb23-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb23-31" data-line-number="31"><span class="co"># Change theme to remove axes and ticks</span></a>
+<a class="sourceLine" id="cb23-32" data-line-number="32"><span class="kw">theme</span>(<span class="dt">panel.background =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb23-33" data-line-number="33">      <span class="dt">panel.grid.major =</span> <span class="kw">element_line</span>(<span class="dt">size =</span> <span class="fl">0.25</span>, <span class="dt">linetype =</span> <span class="st">&#39;dashed&#39;</span>,</a>
+<a class="sourceLine" id="cb23-34" data-line-number="34">                                      <span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>),</a>
+<a class="sourceLine" id="cb23-35" data-line-number="35">      <span class="dt">axis.ticks=</span><span class="kw">element_blank</span>())  </a></code></pre></div>
+<p><img src="07_Projected_Datasets_files/figure-html/map3-1.png" width="672" /></p>
+<p><strong>Now map the data using grid (meters) coordinates</strong></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">dims &lt;-<span class="st"> </span><span class="kw">dim</span>(xgrid)</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">icemap2 &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">xgrid=</span>xgrid,<span class="dt">ygrid=</span>ygrid)</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">icemap2<span class="op">$</span>Seaice &lt;-<span class="st"> </span><span class="kw">array</span>(seaice1[,,idate],<span class="kw">dim</span>(xgrid)<span class="op">*</span><span class="kw">dim</span>(ygrid))</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">icemap2<span class="op">$</span>Seaice[icemap2<span class="op">$</span>Seaice <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="ot">NA</span> </a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb24-8" data-line-number="8"><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> xgrid, <span class="dt">y =</span> ygrid, <span class="dt">fill=</span>Seaice), <span class="dt">data =</span> icemap2) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb24-9" data-line-number="9"><span class="st">       </span><span class="kw">geom_tile</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb24-10" data-line-number="10"><span class="st">       </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colours=</span><span class="kw">rev</span>(<span class="kw">brewer.pal</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">name =</span> <span class="st">&quot;Blues&quot;</span>)),<span class="dt">na.value=</span><span class="st">&quot;black&quot;</span>) </a></code></pre></div>
+<p><img src="07_Projected_Datasets_files/figure-html/map4-1.png" width="672" /></p>
 <img src="data:image/png;base64,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" alt="logo" style="position:absolute; top:0; right:0; padding:10px; width:100px"/>
 
 </div>
@@ -455,8 +505,8 @@ history | converted to R notebook from SSTandBuoy.R</p>
           </div>
         </div>
       </div>
-<a href="timeseries-chl.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="turtlewatch.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="turtlewatch.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

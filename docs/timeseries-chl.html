@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Create and plot timeseries | R Exercises for the NOAA Satellite Course</title>
-  <meta name="description" content="A complitation of R exercises used in the NOAA Satellite Course.">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta name="description" content="A complitation of R exercises used in the NOAA Satellite Course." />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Create and plot timeseries | R Exercises for the NOAA Satellite Course" />
   <meta property="og:type" content="book" />
@@ -22,18 +21,18 @@
   <meta name="twitter:description" content="A complitation of R exercises used in the NOAA Satellite Course." />
   
 
-<meta name="author" content="Cara Wilson and Dale Robinson">
+<meta name="author" content="Cara Wilson and Dale Robinson" />
 
 
-<meta name="date" content="2019-04-20">
+<meta name="date" content="2019-10-08" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="xyt-matchup.html">
-<link rel="next" href="sst-buoy.html">
+<link rel="prev" href="xyt-matchup.html"/>
+<link rel="next" href="sst-buoy.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -41,6 +40,9 @@
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
 
 
 
@@ -51,41 +53,66 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -108,53 +135,74 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#noaa-coastwatchoceanwatch-program"><i class="fa fa-check"></i>NOAA CoastWatch/OceanWatch Program</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
-<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#the-rxtracto-function"><i class="fa fa-check"></i><b>1.1</b> The rxtracto function</a></li>
-<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#the-rxtracto_3d-function"><i class="fa fa-check"></i><b>1.2</b> The rxtracto_3D function</a></li>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#exercise-book-contents"><i class="fa fa-check"></i><b>1.1</b> Exercise book contents</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#rerddapxtracto-r-package"><i class="fa fa-check"></i><b>1.2</b> RerddapXtracto R package</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="introduction.html"><a href="introduction.html#rxtracto-function"><i class="fa fa-check"></i><b>1.2.1</b> rxtracto function</a></li>
+<li class="chapter" data-level="1.2.2" data-path="introduction.html"><a href="introduction.html#plottrack-function"><i class="fa fa-check"></i><b>1.2.2</b> plotTrack function</a></li>
+<li class="chapter" data-level="1.2.3" data-path="introduction.html"><a href="introduction.html#rxtracto_3d-function"><i class="fa fa-check"></i><b>1.2.3</b> rxtracto_3D function</a></li>
+<li class="chapter" data-level="1.2.4" data-path="introduction.html"><a href="introduction.html#plotbox-function"><i class="fa fa-check"></i><b>1.2.4</b> plotBox function</a></li>
+<li class="chapter" data-level="1.2.5" data-path="introduction.html"><a href="introduction.html#rxtractogon-function"><i class="fa fa-check"></i><b>1.2.5</b> rxtractogon function</a></li>
+<li class="chapter" data-level="1.2.6" data-path="introduction.html"><a href="introduction.html#rerddapinfo-function"><i class="fa fa-check"></i><b>1.2.6</b> Rerddap::info function</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="sanctuary.html"><a href="sanctuary.html"><i class="fa fa-check"></i><b>2</b> Extract data within a boundary</a><ul>
 <li class="chapter" data-level="2.1" data-path="sanctuary.html"><a href="sanctuary.html#install-packages-and-load-libraries"><i class="fa fa-check"></i><b>2.1</b> Install packages and load libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="sanctuary.html"><a href="sanctuary.html#load-sanctuary-boundary-coordinates"><i class="fa fa-check"></i><b>2.2</b> Load sanctuary boundary coordinates</a></li>
 <li class="chapter" data-level="2.3" data-path="sanctuary.html"><a href="sanctuary.html#select-the-chloropyll-dataset"><i class="fa fa-check"></i><b>2.3</b> Select the chloropyll dataset</a></li>
 <li class="chapter" data-level="2.4" data-path="sanctuary.html"><a href="sanctuary.html#set-the-options-for-rxtractogon"><i class="fa fa-check"></i><b>2.4</b> Set the options for rxtractogon</a></li>
-<li class="chapter" data-level="2.5" data-path="sanctuary.html"><a href="sanctuary.html#extract-data-and-mask-it-using-rxtractogon"><i class="fa fa-check"></i><b>2.5</b> Extract data and mask it using rxtractogon</a><ul>
-<li class="chapter" data-level="2.5.1" data-path="sanctuary.html"><a href="sanctuary.html#plot-the-data"><i class="fa fa-check"></i><b>2.5.1</b> Plot the data</a></li>
+<li class="chapter" data-level="2.5" data-path="sanctuary.html"><a href="sanctuary.html#extract-data-and-mask-it-using-rxtractogon"><i class="fa fa-check"></i><b>2.5</b> Extract data and mask it using rxtractogon</a></li>
+<li class="chapter" data-level="2.6" data-path="sanctuary.html"><a href="sanctuary.html#select-the-time-period"><i class="fa fa-check"></i><b>2.6</b> Select the time period</a></li>
+<li class="chapter" data-level="2.7" data-path="sanctuary.html"><a href="sanctuary.html#plot-the-data"><i class="fa fa-check"></i><b>2.7</b> Plot the data</a><ul>
+<li class="chapter" data-level="2.7.1" data-path="sanctuary.html"><a href="sanctuary.html#using-the-plotbbox-function"><i class="fa fa-check"></i><b>2.7.1</b> Using the plotBBox function</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="xyt-matchup.html"><a href="xyt-matchup.html"><i class="fa fa-check"></i><b>3</b> Matchups to ship or animal tracks</a><ul>
 <li class="chapter" data-level="3.1" data-path="xyt-matchup.html"><a href="xyt-matchup.html#install-required-packages-and-load-libraries"><i class="fa fa-check"></i><b>3.1</b> Install required packages and load libraries</a></li>
-<li class="chapter" data-level="3.2" data-path="xyt-matchup.html"><a href="xyt-matchup.html#load-xyz-coordinates"><i class="fa fa-check"></i><b>3.2</b> Load XYZ coordinates</a></li>
+<li class="chapter" data-level="3.2" data-path="xyt-matchup.html"><a href="xyt-matchup.html#get-xyz-coordinates"><i class="fa fa-check"></i><b>3.2</b> Get XYZ coordinates</a></li>
 <li class="chapter" data-level="3.3" data-path="xyt-matchup.html"><a href="xyt-matchup.html#select-the-dataset-and-download-its-metadata"><i class="fa fa-check"></i><b>3.3</b> Select the dataset and download its metadata</a></li>
 <li class="chapter" data-level="3.4" data-path="xyt-matchup.html"><a href="xyt-matchup.html#extract-the-satellite-data"><i class="fa fa-check"></i><b>3.4</b> Extract the satellite data</a></li>
-<li class="chapter" data-level="3.5" data-path="xyt-matchup.html"><a href="xyt-matchup.html#plot-the-data-onto-a-map"><i class="fa fa-check"></i><b>3.5</b> Plot the data onto a map</a></li>
-<li class="chapter" data-level="3.6" data-path="xyt-matchup.html"><a href="xyt-matchup.html#try-this-on-your-own"><i class="fa fa-check"></i><b>3.6</b> Try this on your own</a></li>
+<li class="chapter" data-level="3.5" data-path="xyt-matchup.html"><a href="xyt-matchup.html#plotting-the-results"><i class="fa fa-check"></i><b>3.5</b> Plotting the results</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="xyt-matchup.html"><a href="xyt-matchup.html#using-plottrack"><i class="fa fa-check"></i><b>3.5.1</b> Using plotTrack</a></li>
+<li class="chapter" data-level="3.5.2" data-path="xyt-matchup.html"><a href="xyt-matchup.html#using-ggplot."><i class="fa fa-check"></i><b>3.5.2</b> Using ggplot.</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="xyt-matchup.html"><a href="xyt-matchup.html#crossing-the-dateline"><i class="fa fa-check"></i><b>3.6</b> Crossing the Dateline</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="xyt-matchup.html"><a href="xyt-matchup.html#make-a-map-using-base-graphics"><i class="fa fa-check"></i><b>3.6.1</b> Make a map using base graphics</a></li>
+<li class="chapter" data-level="3.6.2" data-path="xyt-matchup.html"><a href="xyt-matchup.html#make-a-map-using-ggplot-graphics"><i class="fa fa-check"></i><b>3.6.2</b> Make a map using ggplot graphics</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="timeseries-chl.html"><a href="timeseries-chl.html"><i class="fa fa-check"></i><b>4</b> Create and plot timeseries</a><ul>
 <li class="chapter" data-level="4.1" data-path="timeseries-chl.html"><a href="timeseries-chl.html#install-required-packages-and-load-libraries-1"><i class="fa fa-check"></i><b>4.1</b> Install required packages and load libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="timeseries-chl.html"><a href="timeseries-chl.html#define-the-area-boundaries"><i class="fa fa-check"></i><b>4.2</b> Define the area boundaries</a></li>
 <li class="chapter" data-level="4.3" data-path="timeseries-chl.html"><a href="timeseries-chl.html#extract-satellite-data-with-rxtracto_3d"><i class="fa fa-check"></i><b>4.3</b> Extract satellite data with rxtracto_3D</a><ul>
-<li><a href="timeseries-chl.html#get-the-seawifs-data-to-begin-examine-the-metadata-for-the-seawifs-monthly-dataset-id-erdswchlamday"><span class="toc-section-number">4.3.1</span> Get the SeaWiFS data**<br />
-To begin, examine the metadata for the SeaWiFS monthly dataset (ID = erdSWchlamday)</a></li>
-<li class="chapter" data-level="4.3.2" data-path="timeseries-chl.html"><a href="timeseries-chl.html#now-get-modis-data"><i class="fa fa-check"></i><b>4.3.2</b> Now get MODIS data</a></li>
-<li class="chapter" data-level="4.3.3" data-path="timeseries-chl.html"><a href="timeseries-chl.html#now-get-viirs-data"><i class="fa fa-check"></i><b>4.3.3</b> Now get VIIRS data</a></li>
+<li class="chapter" data-level="4.3.1" data-path="timeseries-chl.html"><a href="timeseries-chl.html#get-the-seawifs-data"><i class="fa fa-check"></i><b>4.3.1</b> Get the SeaWiFS data</a></li>
+<li class="chapter" data-level="4.3.2" data-path="timeseries-chl.html"><a href="timeseries-chl.html#get-the-modis-data"><i class="fa fa-check"></i><b>4.3.2</b> Get the MODIS data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="timeseries-chl.html"><a href="timeseries-chl.html#get-the-viirs-data"><i class="fa fa-check"></i><b>4.3.3</b> Get the VIIRS data</a></li>
 </ul></li>
-<li class="chapter" data-level="4.4" data-path="timeseries-chl.html"><a href="timeseries-chl.html#create-timeseries-of-mean-montly-data"><i class="fa fa-check"></i><b>4.4</b> Create timeseries of mean montly data</a></li>
+<li class="chapter" data-level="4.4" data-path="timeseries-chl.html"><a href="timeseries-chl.html#create-timeseries-of-mean-monthly-data"><i class="fa fa-check"></i><b>4.4</b> Create timeseries of mean monthly data</a></li>
 <li class="chapter" data-level="4.5" data-path="timeseries-chl.html"><a href="timeseries-chl.html#plot-time-series"><i class="fa fa-check"></i><b>4.5</b> Plot time series</a></li>
-<li class="chapter" data-level="4.6" data-path="timeseries-chl.html"><a href="timeseries-chl.html#now-add-esa-occi-data"><i class="fa fa-check"></i><b>4.6</b> Now add ESA OCCI Data</a></li>
+<li class="chapter" data-level="4.6" data-path="timeseries-chl.html"><a href="timeseries-chl.html#add-the-esa-occi-data"><i class="fa fa-check"></i><b>4.6</b> Add the ESA OCCI Data</a></li>
 <li class="chapter" data-level="4.7" data-path="timeseries-chl.html"><a href="timeseries-chl.html#make-maps-of-the-average-chlorophyll-for-each-satellite-mission"><i class="fa fa-check"></i><b>4.7</b> Make maps of the average chlorophyll for each satellite mission</a></li>
+<li class="chapter" data-level="4.8" data-path="timeseries-chl.html"><a href="timeseries-chl.html#use-a-different-palette"><i class="fa fa-check"></i><b>4.8</b> Use a different palette</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="sst-buoy.html"><a href="sst-buoy.html"><i class="fa fa-check"></i><b>5</b> Matchup satellite and buoy data</a><ul>
 <li class="chapter" data-level="5.1" data-path="sst-buoy.html"><a href="sst-buoy.html#install-required-packages-and-load-libraries-2"><i class="fa fa-check"></i><b>5.1</b> Install required packages and load libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="sst-buoy.html"><a href="sst-buoy.html#extract-buoy-data-from-erddap"><i class="fa fa-check"></i><b>5.2</b> Extract buoy data from ERDDAP</a></li>
-<li class="chapter" data-level="5.3" data-path="sst-buoy.html"><a href="sst-buoy.html#extract-sst-satellite-data-for-matchups-to-buoy-data.-compare-results-for-satellite-and-buoy-create-a-satellite-map-and-overlay-buoy-data"><i class="fa fa-check"></i><b>5.3</b> Extract SST satellite data for matchups to buoy data.** ## Compare results for satellite and buoy ## Create a satellite map and overlay buoy data</a></li>
+<li class="chapter" data-level="5.3" data-path="sst-buoy.html"><a href="sst-buoy.html#extract-sst-satellite-data-for-matchups-to-buoy-data."><i class="fa fa-check"></i><b>5.3</b> Extract SST satellite data for matchups to buoy data.</a></li>
+<li class="chapter" data-level="5.4" data-path="sst-buoy.html"><a href="sst-buoy.html#compare-results-for-satellite-and-buoy"><i class="fa fa-check"></i><b>5.4</b> Compare results for satellite and buoy</a></li>
+<li class="chapter" data-level="5.5" data-path="sst-buoy.html"><a href="sst-buoy.html#create-a-satellite-map-and-overlay-buoy-data"><i class="fa fa-check"></i><b>5.5</b> Create a satellite map and overlay buoy data</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="turtlewatch.html"><a href="turtlewatch.html"><i class="fa fa-check"></i><b>6</b> TurtleWatch</a><ul>
 <li class="chapter" data-level="6.1" data-path="turtlewatch.html"><a href="turtlewatch.html#install-required-packages-and-load-libraries-3"><i class="fa fa-check"></i><b>6.1</b> Install required packages and load libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="turtlewatch.html"><a href="turtlewatch.html#select-the-satellite-data"><i class="fa fa-check"></i><b>6.2</b> Select the Satellite Data</a></li>
 <li class="chapter" data-level="6.3" data-path="turtlewatch.html"><a href="turtlewatch.html#get-satellite-data"><i class="fa fa-check"></i><b>6.3</b> Get Satellite Data</a></li>
-<li class="chapter" data-level="6.4" data-path="turtlewatch.html"><a href="turtlewatch.html#make-a-quick-plot"><i class="fa fa-check"></i><b>6.4</b> Make a quick plot</a></li>
-<li class="chapter" data-level="6.5" data-path="turtlewatch.html"><a href="turtlewatch.html#defining-the-thermal-niche-of-loggerhead-turtles"><i class="fa fa-check"></i><b>6.5</b> DEFINING THE THERMAL NICHE OF LOGGERHEAD TURTLES</a></li>
-<li class="chapter" data-level="6.6" data-path="turtlewatch.html"><a href="turtlewatch.html#prepare-data-for-plotting"><i class="fa fa-check"></i><b>6.6</b> Prepare data for plotting</a></li>
-<li class="chapter" data-level="6.7" data-path="turtlewatch.html"><a href="turtlewatch.html#plot-the-data-1"><i class="fa fa-check"></i><b>6.7</b> Plot the Data</a></li>
+<li class="chapter" data-level="6.4" data-path="turtlewatch.html"><a href="turtlewatch.html#make-a-quick-plot-using-plotbbox"><i class="fa fa-check"></i><b>6.4</b> Make a quick plot using plotBBox</a></li>
+<li class="chapter" data-level="6.5" data-path="turtlewatch.html"><a href="turtlewatch.html#define-the-thermal-niche-of-loggerhead-turtles"><i class="fa fa-check"></i><b>6.5</b> Define the Thermal niche of Loggerhead Turtles</a></li>
+<li class="chapter" data-level="6.6" data-path="turtlewatch.html"><a href="turtlewatch.html#plot-the-data-using-ggplot"><i class="fa fa-check"></i><b>6.6</b> Plot the Data using ‘ggplot’</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="Projected.html"><a href="Projected.html"><i class="fa fa-check"></i><b>7</b> Projected Datasets</a><ul>
+<li class="chapter" data-level="7.1" data-path="Projected.html"><a href="Projected.html#install-required-packages-and-load-libraries-4"><i class="fa fa-check"></i><b>7.1</b> Install required packages and load libraries</a></li>
+<li class="chapter" data-level="7.2" data-path="Projected.html"><a href="Projected.html#download-the-sea-ice-concentration-data"><i class="fa fa-check"></i><b>7.2</b> Download the sea ice concentration data</a></li>
+<li class="chapter" data-level="7.3" data-path="Projected.html"><a href="Projected.html#make-a-maps-of-the-area"><i class="fa fa-check"></i><b>7.3</b> Make a maps of the area</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://coastwatch.pfeg.noaa.gov" target="blank">Created by CoastWatch West Coast</a></li>
@@ -181,7 +229,7 @@ To begin, examine the metadata for the SeaWiFS monthly dataset (ID = erdSWchlamd
 <h1><span class="header-section-number">Chapter 4</span> Create and plot timeseries</h1>
 <blockquote>
 <p>notebook filename | 04-timeseries_chl.Rmd<br />
-history | converted to R notebook from Timeseries_SST.R</p>
+history | converted to R notebook from Timeseries_CHL.R</p>
 </blockquote>
 <p>This example extracts a time-series of monthly satellite chlorophyll data for the period of 1997-present from four different monthly satellite datasets:</p>
 <ul>
@@ -191,7 +239,7 @@ history | converted to R notebook from Timeseries_SST.R</p>
 </li>
 <li>VIIRS, 2012-present (ID = nesdisVHNSQchlaMonthly)<br />
 </li>
-<li>OC-CCI, 1997-2017, a blended product that merges multiple satellite missions (ID = pmlEsaCCI31OceanColorMonthly)</li>
+<li>OC-CCI, 1997-2018, a blended product that merges multiple satellite missions (ID = pmlEsaCCI41OceanColorMonthly)</li>
 </ul>
 <p>The exercise demonstrates the following techniques:</p>
 <ul>
@@ -199,52 +247,42 @@ history | converted to R notebook from Timeseries_SST.R</p>
 <li>Using <strong>rerddap</strong> to retrieve information about a dataset from ERDDAP</li>
 <li>Comparing results from different sensors<br />
 </li>
+<li>Averaging data temporally and spatially</li>
 <li>Producing scatter plots<br />
 </li>
 <li>Producing line plots<br />
 </li>
-<li>Drawing maps with satellite data</li>
+<li>Drawing maps with satellite data using <strong>ggplot</strong></li>
 </ul>
 <div id="install-required-packages-and-load-libraries-1" class="section level2">
 <h2><span class="header-section-number">4.1</span> Install required packages and load libraries</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Function to check if pkgs are installed, install missing pkgs, and load</span>
-pkgTest &lt;-<span class="st"> </span><span class="cf">function</span>(x)
-{
-  <span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(x,<span class="dt">character.only =</span> <span class="ot">TRUE</span>))
-  {
-    <span class="kw">install.packages</span>(x,<span class="dt">dep=</span><span class="ot">TRUE</span>)
-    <span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(x,<span class="dt">character.only =</span> <span class="ot">TRUE</span>)) <span class="kw">stop</span>(x, <span class="st">&quot; :Package not found&quot;</span>)
-  }
-}
-
-<span class="co"># create list of required packages</span>
-list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>( <span class="st">&quot;lubridate&quot;</span>, <span class="st">&quot;maps&quot;</span>,  <span class="st">&quot;mapdata&quot;</span>, <span class="st">&quot;maptools&quot;</span>, <span class="st">&quot;mapproj&quot;</span>, <span class="st">&quot;ncdf4&quot;</span>,
-                       <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;colorRamps&quot;</span>, <span class="st">&quot;sp&quot;</span>, <span class="st">&quot;plyr&quot;</span>, <span class="st">&quot;devtools&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;gridExtra&quot;</span>)
-
-<span class="co"># create list of installed packages</span>
-pkges =<span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]
-
-<span class="cf">for</span> (pk <span class="cf">in</span> list.of.packages) {
-  <span class="kw">pkgTest</span>(pk)
-}
-
-<span class="co"># create list of required packages not installed</span>
-<span class="co">#new.packages &lt;- list.of.packages[!(list.of.packages %in% pkges)]</span>
-
-<span class="co"># install missing packages</span>
-<span class="co">#if(length(new.packages)) install.packages(new.packages)</span>
-
-<span class="co"># check if devtools pkgs are install. Install missing pkgs.</span>
-<span class="cf">if</span>(<span class="op">!</span>(<span class="st">&#39;rerddapXtracto&#39;</span> <span class="op">%in%</span><span class="st"> </span>pkges)) {
-  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;rmendels/rerddapXtracto&quot;</span>)}
-<span class="cf">if</span>(<span class="op">!</span>(<span class="st">&#39;plotdap&#39;</span> <span class="op">%in%</span><span class="st"> </span>pkges)) {
-  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;ropensci/plotdap&#39;</span>)} 
-<span class="cf">if</span>(<span class="op">!</span>(<span class="st">&#39;rerddap&#39;</span> <span class="op">%in%</span><span class="st"> </span>pkges)) {
-  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;ropensci/rerddap&quot;</span>)}
-
-<span class="kw">library</span>(rerddap)
-<span class="kw">library</span>(plotdap)
-<span class="kw">library</span>(rerddapXtracto)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Function to check if pkgs are installed, install missing pkgs, and load</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">pkgTest &lt;-<span class="st"> </span><span class="cf">function</span>(x)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">{</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(x,<span class="dt">character.only =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">  {</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="kw">install.packages</span>(x,<span class="dt">dep=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">    <span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(x,<span class="dt">character.only =</span> <span class="ot">TRUE</span>)) <span class="kw">stop</span>(x, <span class="st">&quot; :Package not found&quot;</span>)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co"># create list of required packages</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">list.of.packages &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ncdf4&quot;</span>,<span class="st">&quot;parsedate&quot;</span>,<span class="st">&quot;rerddap&quot;</span>,<span class="st">&quot;plotdap&quot;</span>,<span class="st">&quot;sp&quot;</span>,<span class="st">&quot;rerddapXtracto&quot;</span>,                        <span class="st">&quot;lubridate&quot;</span>, <span class="st">&quot;maps&quot;</span>,<span class="st">&quot;cmocean&quot;</span>,</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">                       <span class="st">&quot;mapdata&quot;</span>, <span class="st">&quot;maptools&quot;</span>, <span class="st">&quot;mapproj&quot;</span>, </a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">                       <span class="st">&quot;reshape2&quot;</span>, <span class="st">&quot;colorRamps&quot;</span>, <span class="st">&quot;plyr&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;gridExtra&quot;</span>)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># create list of installed packages</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">pkges =<span class="st"> </span><span class="kw">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="cf">for</span> (pk <span class="cf">in</span> list.of.packages) {</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20">  <span class="kw">pkgTest</span>(pk)</a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">}</a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co"># create list of required packages not installed</span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co">#new.packages &lt;- list.of.packages[!(list.of.packages %in% pkges)]</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co"># install missing packages</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="co">#if(length(new.packages)) install.packages(new.packages)</span></a></code></pre></div>
 </div>
 <div id="define-the-area-boundaries" class="section level2">
 <h2><span class="header-section-number">4.2</span> Define the area boundaries</h2>
@@ -254,36 +292,36 @@ pkges =<span class="st"> </span><span class="kw">installed.packages</span>()[,<s
 </li>
 <li>Set the latitude range: xcoord&lt;-c(31,34)</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xcoord&lt;-<span class="kw">c</span>(<span class="op">-</span><span class="dv">120</span>, <span class="op">-</span><span class="dv">115</span>)
-ycoord&lt;-<span class="kw">c</span>(<span class="dv">31</span>,<span class="dv">34</span>)
-
-##Format Box Coordinates for cosmetics, to make a nice map title
-ttext&lt;-<span class="kw">paste</span>(<span class="kw">paste</span>(<span class="kw">abs</span>(xcoord), <span class="dt">collapse=</span><span class="st">&quot;-&quot;</span>),<span class="st">&quot;W, &quot;</span>, <span class="kw">paste</span>(ycoord, <span class="dt">collapse=</span><span class="st">&quot;-&quot;</span>),<span class="st">&quot;N&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">xcoord&lt;-<span class="kw">c</span>(<span class="op">-</span><span class="dv">120</span>, <span class="dv">-115</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">ycoord&lt;-<span class="kw">c</span>(<span class="dv">31</span>,<span class="dv">34</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">##Format Box Coordinates for cosmetics, to make a nice map title</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">ttext&lt;-<span class="kw">paste</span>(<span class="kw">paste</span>(<span class="kw">abs</span>(xcoord), <span class="dt">collapse=</span><span class="st">&quot;-&quot;</span>),<span class="st">&quot;W, &quot;</span>, <span class="kw">paste</span>(ycoord, <span class="dt">collapse=</span><span class="st">&quot;-&quot;</span>),<span class="st">&quot;N&quot;</span>)</a></code></pre></div>
 </div>
 <div id="extract-satellite-data-with-rxtracto_3d" class="section level2">
 <h2><span class="header-section-number">4.3</span> Extract satellite data with rxtracto_3D</h2>
 <p>For each dataset, you will extract satellite data for the entire length of the available timeseries.</p>
 <ul>
-<li>Dates must be defined separately for each dataset. Xtraco_3D will crash if dates are entered that are not part of the timeseries.<br />
+<li>Dates must be defined separately for each dataset. <strong>rxtracto_3D</strong> will crash if dates are entered that are not part of the timeseries.<br />
 </li>
 <li>The beginning (earliest) date to use in timeseries is obtained from the information returned in dataInfo.<br />
 </li>
 <li>To get the ending (most recent) date to use in the timeseries, you will use the <code>last</code> option for time.</li>
 </ul>
-<div id="get-the-seawifs-data-to-begin-examine-the-metadata-for-the-seawifs-monthly-dataset-id-erdswchlamday" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> Get the SeaWiFS data**<br />
-To begin, examine the metadata for the SeaWiFS monthly dataset (ID = erdSWchlamday)</h3>
-<p><strong>The script below:</strong></p>
+<div id="get-the-seawifs-data" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> Get the SeaWiFS data</h3>
+<p>To begin, examine the metadata for the SeaWiFS monthly dataset (ID = erdSWchlamday).
+The script below:</p>
 <ul>
 <li>Gathers information about the dataset (metadata) using <strong>rerddap</strong><br />
 </li>
 <li>Displays the information</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use rerddap to get information about the dataset</span>
-dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;erdSWchlamday&#39;</span>)
-
-<span class="co"># Display the dataset metadata</span>
-dataInfo</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Use rerddap to get information about the dataset</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;erdSWchlamday&#39;</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co"># Display the dataset metadata</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">dataInfo</a></code></pre></div>
 <pre><code>## &lt;ERDDAP info&gt; erdSWchlamday 
 ##  Base URL: https://upwell.pfeg.noaa.gov/erddap/ 
 ##  Dimensions (range):  
@@ -304,81 +342,79 @@ dataInfo</code></pre></div>
 </li>
 <li>Use the “last” option for the ending date instead of the actual date in the dataInfo</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extract the parameter name from the metadata in dataInfo</span>
-parameter &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>variable<span class="op">$</span>variable_name
-
-<span class="co"># Set the altitude coordinate to zero</span>
-zcoord &lt;-<span class="st"> </span><span class="dv">0</span>.
-
-<span class="co"># Extract the beginning and ending dates of the dataset from the metadata in dataInfo</span>
-global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL
-tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]
-
-<span class="co"># Populate the time vector with the time_coverage_start from dataInfo</span>
-<span class="co"># Use the &quot;last&quot; option for the ending date</span>
-tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)
-
-<span class="co"># Extract the timeseries data using rxtracto_3D</span>
-chlSeaWiFS&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,
-                        <span class="dt">tcoord=</span>tcoord,
-                        <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord,<span class="dt">zcoord=</span>zcoord)
-
-## Cleanup the returned data, remove extraneous zcoord dimension for chlorophyll 
-chlSeaWiFS<span class="op">$</span>chlorophyll &lt;-<span class="st"> </span><span class="kw">drop</span>(chlSeaWiFS<span class="op">$</span>chlorophyll)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Extract the parameter name from the metadata in dataInfo</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">parameter &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>variable<span class="op">$</span>variable_name</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># Set the altitude coordinate to zero</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">zcoord &lt;-<span class="st"> </span><span class="fl">0.</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># Extract the beginning and ending dates of the dataset from the metadata in dataInfo</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co"># Populate the time vector with the time_coverage_start from dataInfo</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co"># Use the &quot;last&quot; option for the ending date</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)</a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co"># Extract the timeseries data using rxtracto_3D</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16">chlSeaWiFS&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,</a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">                        <span class="dt">tcoord=</span>tcoord,</a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">                        <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord,<span class="dt">zcoord=</span>zcoord)</a></code></pre></div>
+<pre><code>## Registered S3 method overwritten by &#39;httr&#39;:
+##   method           from  
+##   print.cache_info hoardr</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Remove extraneous zcoord dimension for chlorophyll </span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">chlSeaWiFS<span class="op">$</span>chlorophyll &lt;-<span class="st"> </span><span class="kw">drop</span>(chlSeaWiFS<span class="op">$</span>chlorophyll)</a></code></pre></div>
 </div>
-<div id="now-get-modis-data" class="section level3">
-<h3><span class="header-section-number">4.3.2</span> Now get MODIS data</h3>
-<p><strong>First get the datadet metadata with “rerddap::info” by changeing the dataset ID to “erdMH1chlamday”</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use rerddap to get information about the dataset</span>
-<span class="co"># if you encouter an error reading the nc file clear the rerrdap cache: </span>
-<span class="co"># rerddap::cache_delete_all(force = TRUE)</span>
-dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;erdMH1chlamday&#39;</span>)
-dataInfo</code></pre></div>
+<div id="get-the-modis-data" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> Get the MODIS data</h3>
+<p>First get the datadet metadata with “rerddap::info” by changing the dataset ID to “erdMH1chlamday”</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Use rerddap to get information about the dataset</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># if you encouter an error reading the nc file clear the rerrdap cache: </span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co"># rerddap::cache_delete_all(force = TRUE)</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;erdMH1chlamday&#39;</span>)</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">dataInfo</a></code></pre></div>
 <pre><code>## &lt;ERDDAP info&gt; erdMH1chlamday 
 ##  Base URL: https://upwell.pfeg.noaa.gov/erddap/ 
 ##  Dimensions (range):  
-##      time: (2003-01-16T00:00:00Z, 2019-03-16T00:00:00Z) 
+##      time: (2003-01-16T00:00:00Z, 2019-11-16T00:00:00Z) 
 ##      latitude: (-89.97918, 89.97916) 
 ##      longitude: (-179.9792, 179.9792) 
 ##  Variables:  
 ##      chlorophyll: 
 ##          Units: mg m^-3</code></pre>
-<p><strong>Set the arguments for and run rxtracto_3D</strong></p>
-<ul>
-<li>Since this dataset does not have an altitude dimension, remove zcoord as an augument in rxtracto_3D</li>
-</ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extract the parameter name from the metadata in dataInfo</span>
-parameter &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>variable<span class="op">$</span>variable_name
-
-<span class="co">#Extract the start and end times of the dataset from the metadata in dataInfo</span>
-global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL
-
-<span class="co"># Populate the time vector with the time_coverage_start from dataInfo</span>
-<span class="co"># Use the &quot;last&quot; option for the ending date</span>
-tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]
-tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)
-
-<span class="co"># Run rxtracto_3D</span>
-chlMODIS&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,
-                      <span class="dt">tcoord=</span>tcoord,
-                      <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord)</code></pre></div>
+<p><strong>Set the arguments for, and runs, rxtracto_3D</strong></p>
+<p>Since this dataset does not have an altitude dimension, remove zcoord as an argument in rxtracto_3D</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># Extract the parameter name from the metadata in dataInfo</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">parameter &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>variable<span class="op">$</span>variable_name</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#Extract the start and end times of the dataset from the metadata in dataInfo</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co"># Populate the time vector with the time_coverage_start from dataInfo</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co"># Use the &quot;last&quot; option for the ending date</span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9">tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]</a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)</a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co"># Run rxtracto_3D</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13">chlMODIS&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,</a>
+<a class="sourceLine" id="cb10-14" data-line-number="14">                      <span class="dt">tcoord=</span>tcoord,</a>
+<a class="sourceLine" id="cb10-15" data-line-number="15">                      <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord)</a></code></pre></div>
 </div>
-<div id="now-get-viirs-data" class="section level3">
-<h3><span class="header-section-number">4.3.3</span> Now get VIIRS data</h3>
-<p><strong>First get the datadet metadata with “rerddap::info” by changeing the dataset ID to “nesdisVHNSQchlaMonthly”</strong></p>
-<ul>
-<li>Repeat the same commands but change the name of the dataset.</li>
-</ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use rerddap to get information about the dataset</span>
-<span class="co"># if you encouter an error reading the nc file clear the rerrdap cache: </span>
-<span class="co"># rerddap::cache_delete_all(force = TRUE)</span>
-dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;nesdisVHNSQchlaMonthly&#39;</span>)
-<span class="co">#dataInfo &lt;- rerddap::info(&#39;erdVHNchlamday&#39;)  # alternate dataset to use</span>
-dataInfo</code></pre></div>
+<div id="get-the-viirs-data" class="section level3">
+<h3><span class="header-section-number">4.3.3</span> Get the VIIRS data</h3>
+<p>First get the dataset metadata with “rerddap::info” by changeing the dataset ID to “nesdisVHNSQchlaMonthly”</p>
+<p>Repeat the same commands but change the name of the dataset.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># Use rerddap to get information about the dataset</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># if you encouter an error reading the nc file clear the rerrdap cache: </span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co"># rerddap::cache_delete_all(force = TRUE)</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;nesdisVHNSQchlaMonthly&#39;</span>)</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#dataInfo &lt;- rerddap::info(&#39;erdVHNchlamday&#39;)  # alternate dataset to use</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">dataInfo</a></code></pre></div>
 <pre><code>## &lt;ERDDAP info&gt; nesdisVHNSQchlaMonthly 
 ##  Base URL: https://upwell.pfeg.noaa.gov/erddap/ 
 ##  Dimensions (range):  
-##      time: (2012-01-02T12:00:00Z, 2018-12-01T12:00:00Z) 
+##      time: (2012-01-02T12:00:00Z, 2019-11-01T12:00:00Z) 
 ##      altitude: (0.0, 0.0) 
 ##      latitude: (-89.75626, 89.75625) 
 ##      longitude: (-179.9812, 179.9813) 
@@ -389,176 +425,218 @@ dataInfo</code></pre></div>
 <ul>
 <li>This dataset has an altitude dimension. Include zcoord as an argument in the rxtracto_3D function</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## This extracts the parameter name from the metadata  in dataInfo
-parameter &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>variable<span class="op">$</span>variable_name
-
-<span class="co">#Extract the start and end times of the dataset from the metadata in dataInfo</span>
-global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL
-
-<span class="co"># Populate the time vector with the time_coverage_start from dataInfo</span>
-<span class="co"># Use the &quot;last&quot; option for the ending date</span>
-tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]
-tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)
-<span class="co">#tcoord &lt;- c(tt[1], tt[2])</span>
-
-<span class="co"># Run rxtracto_3D</span>
-chlVIIRS&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,
-                      <span class="dt">tcoord=</span>tcoord,
-                      <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord,<span class="dt">zcoord=</span>zcoord)
-
-## Clean up, remove extraneous zcoord dimension for chlorophyll 
-chlVIIRS<span class="op">$</span>chlor_a &lt;-<span class="st"> </span><span class="kw">drop</span>(chlVIIRS<span class="op">$</span>chlor_a)
-<span class="co">#chlVIIRS$chla &lt;- drop(chlVIIRS$chla)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">## This extracts the parameter name from the metadata in dataInfo</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">parameter &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>variable<span class="op">$</span>variable_name</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co">#Extract the start and end times of the dataset from the metadata in dataInfo</span></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co"># Populate the time vector with the time_coverage_start from dataInfo</span></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co"># Use the &quot;last&quot; option for the ending date</span></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]</a>
+<a class="sourceLine" id="cb13-10" data-line-number="10">tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)</a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#tcoord &lt;- c(tt[1], tt[2])</span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co"># Run rxtracto_3D</span></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14">chlVIIRS&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,</a>
+<a class="sourceLine" id="cb13-15" data-line-number="15">                      <span class="dt">tcoord=</span>tcoord,</a>
+<a class="sourceLine" id="cb13-16" data-line-number="16">                      <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord,<span class="dt">zcoord=</span>zcoord)</a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb13-18" data-line-number="18"><span class="co">## Remove extraneous zcoord dimension for chlorophyll </span></a>
+<a class="sourceLine" id="cb13-19" data-line-number="19">chlVIIRS<span class="op">$</span>chlor_a &lt;-<span class="st"> </span><span class="kw">drop</span>(chlVIIRS<span class="op">$</span>chlor_a)</a>
+<a class="sourceLine" id="cb13-20" data-line-number="20"><span class="co">#chlVIIRS$chla &lt;- drop(chlVIIRS$chla)</span></a></code></pre></div>
 </div>
 </div>
-<div id="create-timeseries-of-mean-montly-data" class="section level2">
-<h2><span class="header-section-number">4.4</span> Create timeseries of mean montly data</h2>
+<div id="create-timeseries-of-mean-monthly-data" class="section level2">
+<h2><span class="header-section-number">4.4</span> Create timeseries of mean monthly data</h2>
 <p><strong>The script below:</strong></p>
 <ul>
-<li>For each dataset, spatially averages data for each timestep within the area boundaries.<br />
+<li>For each dataset, spatially averages data for each time step within the area boundaries.<br />
 </li>
 <li>For each dataset, temporally averages data for data in each timeseries onto one map</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Spatially average all the data within the box for each dataset.
-## The c(3) indicates the dimension to keep - in this case time 
-chlSeaWiFS<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlSeaWiFS<span class="op">$</span>chlorophyll, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-chlMODIS<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlMODIS<span class="op">$</span>chlorophyll, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-chlVIIRS<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlVIIRS<span class="op">$</span>chlor_a, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-<span class="co">#chlVIIRS$avg &lt;- apply(chlVIIRS$chla, c(3),function(x) mean(x,na.rm=TRUE))</span>
-
-## Temporally average all of the data into one map 
-## The c(1,2) indicates the dimensions to keep - in this case latitude and longitude  
-chlSeaWiFS<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlSeaWiFS<span class="op">$</span>chlorophyll,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-chlMODIS<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlMODIS<span class="op">$</span>chlorophyll,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-chlVIIRS<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlVIIRS<span class="op">$</span>chlor_a,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-<span class="co">#chlVIIRS$avgmap &lt;- apply(chlVIIRS$chla,c(1,2),function(x) mean(x,na.rm=TRUE))</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">## Spatially average all the data within the box for each dataset.</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="co">## The c(3) indicates the dimension to keep - in this case time </span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">chlSeaWiFS<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlSeaWiFS<span class="op">$</span>chlorophyll, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">chlMODIS<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlMODIS<span class="op">$</span>chlorophyll, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">chlVIIRS<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlVIIRS<span class="op">$</span>chlor_a, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co">#chlVIIRS$avg &lt;- apply(chlVIIRS$chla, c(3),function(x) mean(x,na.rm=TRUE))</span></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co">## Temporally average all of the data into one map </span></a>
+<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">## The c(1,2) indicates the dimensions to keep - in this case latitude and longitude  </span></a>
+<a class="sourceLine" id="cb14-10" data-line-number="10">chlSeaWiFS<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlSeaWiFS<span class="op">$</span>chlorophyll,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">chlMODIS<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlMODIS<span class="op">$</span>chlorophyll,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12">chlVIIRS<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlVIIRS<span class="op">$</span>chlor_a,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#chlVIIRS$avgmap &lt;- apply(chlVIIRS$chla,c(1,2),function(x) mean(x,na.rm=TRUE))</span></a></code></pre></div>
 </div>
 <div id="plot-time-series" class="section level2">
 <h2><span class="header-section-number">4.5</span> Plot time series</h2>
 <ul>
-<li>Displays an inline timeseries plot of the datasets</li>
+<li>Displays a timeseries plot of all three datasets</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## To print out a file uncomment the png command and the dev.off command
-##png(file=&quot;CHL_timeseries.png&quot;, width=10,height=7.5,units=&quot;in&quot;,res=500)
-<span class="kw">plot</span>(<span class="kw">as.Date</span>(chlSeaWiFS<span class="op">$</span>time), chlSeaWiFS<span class="op">$</span>avg, 
-     <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">cex=</span>.<span class="dv">7</span>,
-     <span class="dt">xlim=</span><span class="kw">as.Date</span>(<span class="kw">c</span>(<span class="st">&quot;1997-01-01&quot;</span>,<span class="st">&quot;2019-01-01&quot;</span>)),
-     <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">3</span>),
-     <span class="dt">ylab=</span><span class="st">&quot;Chlorophyll&quot;</span>, <span class="dt">main=</span>ttext)
-<span class="co">#axis(2)</span>
-
-<span class="co"># Now add MODIS and VIIRS  data </span>
-<span class="kw">points</span>(<span class="kw">as.Date</span>(chlMODIS<span class="op">$</span>time), chlMODIS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)
-<span class="kw">points</span>(<span class="kw">as.Date</span>(chlVIIRS<span class="op">$</span>time), chlVIIRS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)
-
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.8</span>, <span class="st">&quot;SeaWiFS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.5</span>, <span class="st">&quot;MODIS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.2</span>, <span class="st">&quot;VIIRS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">## To print out a file uncomment the png command and the dev.off command</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co">##png(file=&quot;CHL_timeseries.png&quot;, width=10,height=7.5,units=&quot;in&quot;,res=500)</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="kw">plot</span>(<span class="kw">as.Date</span>(chlSeaWiFS<span class="op">$</span>time), chlSeaWiFS<span class="op">$</span>avg, </a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">     <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">cex=</span>.<span class="dv">7</span>,</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">     <span class="dt">xlim=</span><span class="kw">as.Date</span>(<span class="kw">c</span>(<span class="st">&quot;1997-01-01&quot;</span>,<span class="st">&quot;2019-01-01&quot;</span>)),</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">     <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">3</span>),</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">     <span class="dt">ylab=</span><span class="st">&quot;Chlorophyll&quot;</span>, <span class="dt">main=</span>ttext)</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="co">#axis(2)</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co"># Now add MODIS and VIIRS  data </span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"><span class="kw">points</span>(<span class="kw">as.Date</span>(chlMODIS<span class="op">$</span>time), chlMODIS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="kw">points</span>(<span class="kw">as.Date</span>(chlVIIRS<span class="op">$</span>time), chlVIIRS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb15-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb15-14" data-line-number="14"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.8</span>, <span class="st">&quot;SeaWiFS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.5</span>, <span class="st">&quot;MODIS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.2</span>, <span class="st">&quot;VIIRS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a></code></pre></div>
 <p><img src="04-timeseries_chl_files/figure-html/plot-1.png" width="672" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#dev.off() # This closes the png file if its been written to </span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co">#dev.off() # This closes the png file if its been written to </span></a></code></pre></div>
 </div>
-<div id="now-add-esa-occi-data" class="section level2">
-<h2><span class="header-section-number">4.6</span> Now add ESA OCCI Data</h2>
-<p>If you needed a single timeseries from 1997 to present, you would have to use the plot above to devise some method to reconsile the difference in values where two datasets overlap. Alternatively, you cound use the ESA OCCI dataset, which blends data from many satellite missions into a single dataset. Add the ESA OCCI dataset to the plot above to see how it compares with data from the individual satellite missions.</p>
+<div id="add-the-esa-occi-data" class="section level2">
+<h2><span class="header-section-number">4.6</span> Add the ESA OCCI Data</h2>
+<p>If you needed a single timeseries from 1997 to present, you would have to use the plot above to devise some method to reconcile the difference in values where two datasets overlap. Alternatively, you could use the ESA OC-CCI (ocean color climate change initiative) dataset, which blends data from many satellite missions into a single dataset. Next we will add the ESA OC-CCI dataset to the plot above to see how it compares with data from the individual satellite missions.</p>
 <ul>
 <li>Change the dataset ID to “pmlEsaCCI31OceanColorMonthly” in the rerddap::info function.</li>
-<li>There are over 60 vaiables in this dataset, so the dataInfo is not displayed (feel free to examine the dataInfo variable on your own).<br />
+<li>There are over 60 variables in this dataset, so the dataInfo is not displayed (feel free to examine the dataInfo variable on your own).<br />
 </li>
 <li>This dataset has no altitude dimension. Do not include zcoord as an argument in the rxtracto_3D function.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Reading in three datasets, which  have different datset attributes (ie parameter </span>
-<span class="co"># name and the presence or absence of an altitude field) is cumbersome.  ESA makes </span>
-<span class="co"># a &quot;mission-less&quot; product, which seemlessly integrates data from all these sensors </span>
-<span class="co"># into one.  So lets redo this exercise iusing this dateset instead and compare the results.  </span>
-
-dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;pmlEsaCCI31OceanColorMonthly&#39;</span>)
-
-<span class="co"># This identifies the parameter to choose - there are &gt; 60 in this dataset1 </span>
-parameter &lt;-<span class="st"> &#39;chlor_a&#39;</span>
-
-global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL
-tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]
-tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)
-<span class="co"># if you encouter an error reading the nc file clear the rerrdap cache: </span>
-rerddap<span class="op">::</span><span class="kw">cache_delete_all</span>(<span class="dt">force =</span> <span class="ot">TRUE</span>)
-
-chlOCCCI&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,
-                      <span class="dt">tcoord=</span>tcoord,
-                      <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord)
-
-<span class="co"># Now spatially average the data into a timeseries</span>
-chlOCCCI<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlOCCCI<span class="op">$</span>chlor_a, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))
-
-<span class="co"># Now temporally average the data into one map </span>
-chlOCCCI<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlOCCCI<span class="op">$</span>chlor_a,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># Reading in three datasets, which  have different datset attributes (ie parameter </span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="co"># name and the presence or absence of an altitude field) is cumbersome.  ESA makes </span></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="co"># a &quot;mission-less&quot; product, which seemlessly integrates data from all these sensors </span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="co"># into one.  So lets redo this exercise using this dateset instead and compare the results.  </span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">dataInfo &lt;-<span class="st"> </span>rerddap<span class="op">::</span><span class="kw">info</span>(<span class="st">&#39;pmlEsaCCI41OceanColorMonthly&#39;</span>)</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="co"># This identifies the parameter to choose - there are &gt; 60 in this dataset1 </span></a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">parameter &lt;-<span class="st"> &#39;chlor_a&#39;</span></a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11">global &lt;-<span class="st"> </span>dataInfo<span class="op">$</span>alldata<span class="op">$</span>NC_GLOBAL</a>
+<a class="sourceLine" id="cb17-12" data-line-number="12">tt &lt;-<span class="st"> </span>global[ global<span class="op">$</span>attribute_name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;time_coverage_end&#39;</span>,<span class="st">&#39;time_coverage_start&#39;</span>), <span class="st">&quot;value&quot;</span>, ]</a>
+<a class="sourceLine" id="cb17-13" data-line-number="13">tcoord &lt;-<span class="st"> </span><span class="kw">c</span>(tt[<span class="dv">2</span>],<span class="st">&quot;last&quot;</span>)</a>
+<a class="sourceLine" id="cb17-14" data-line-number="14"><span class="co"># if you encouter an error reading the nc file clear the rerrdap cache: </span></a>
+<a class="sourceLine" id="cb17-15" data-line-number="15">rerddap<span class="op">::</span><span class="kw">cache_delete_all</span>(<span class="dt">force =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb17-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb17-17" data-line-number="17">chlOCCCI&lt;-<span class="kw">rxtracto_3D</span>(dataInfo,<span class="dt">parameter=</span>parameter,</a>
+<a class="sourceLine" id="cb17-18" data-line-number="18">                      <span class="dt">tcoord=</span>tcoord,</a>
+<a class="sourceLine" id="cb17-19" data-line-number="19">                      <span class="dt">xcoord=</span>xcoord,<span class="dt">ycoord=</span>ycoord)</a>
+<a class="sourceLine" id="cb17-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb17-21" data-line-number="21"><span class="co"># Now spatially average the data into a timeseries</span></a>
+<a class="sourceLine" id="cb17-22" data-line-number="22">chlOCCCI<span class="op">$</span>avg &lt;-<span class="st"> </span><span class="kw">apply</span>(chlOCCCI<span class="op">$</span>chlor_a, <span class="kw">c</span>(<span class="dv">3</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb17-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb17-24" data-line-number="24"><span class="co"># Now temporally average the data into one map </span></a>
+<a class="sourceLine" id="cb17-25" data-line-number="25">chlOCCCI<span class="op">$</span>avgmap &lt;-<span class="st"> </span><span class="kw">apply</span>(chlOCCCI<span class="op">$</span>chlor_a,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(x) <span class="kw">mean</span>(x,<span class="dt">na.rm=</span><span class="ot">TRUE</span>))</a></code></pre></div>
 <p><strong>Add ESA OCCI data to the plot</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plot SeaWIFS
-<span class="kw">plot</span>(<span class="kw">as.Date</span>(chlSeaWiFS<span class="op">$</span>time), chlSeaWiFS<span class="op">$</span>avg, 
-     <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">cex=</span>.<span class="dv">7</span>,
-     <span class="dt">xlim=</span><span class="kw">as.Date</span>(<span class="kw">c</span>(<span class="st">&quot;1997-01-01&quot;</span>,<span class="st">&quot;2019-01-01&quot;</span>)),
-     <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">3</span>),
-     <span class="dt">ylab=</span><span class="st">&quot;Chlorophyll&quot;</span>, <span class="dt">main=</span>ttext)
-<span class="co">#axis(2)</span>
-
-## Add MODIS, VIIRS and OCCCI data 
-<span class="kw">points</span>(<span class="kw">as.Date</span>(chlMODIS<span class="op">$</span>time), chlMODIS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)
-<span class="kw">points</span>(<span class="kw">as.Date</span>(chlVIIRS<span class="op">$</span>time), chlVIIRS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)
-<span class="kw">points</span>(<span class="kw">as.Date</span>(chlOCCCI<span class="op">$</span>time), chlOCCCI<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">5</span>)
-## Add text annotation for legend
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.8</span>, <span class="st">&quot;SeaWiFS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.5</span>, <span class="st">&quot;MODIS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.2</span>, <span class="st">&quot;VIIRS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)
-<span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">1.9</span>, <span class="st">&quot;OC-CCI&quot;</span>,<span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co">## Plot SeaWIFS</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">plot</span>(<span class="kw">as.Date</span>(chlSeaWiFS<span class="op">$</span>time), chlSeaWiFS<span class="op">$</span>avg, </a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">     <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">cex=</span>.<span class="dv">7</span>,</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">     <span class="dt">xlim=</span><span class="kw">as.Date</span>(<span class="kw">c</span>(<span class="st">&quot;1997-01-01&quot;</span>,<span class="st">&quot;2019-01-01&quot;</span>)),</a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">     <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">3</span>),</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">     <span class="dt">ylab=</span><span class="st">&quot;Chlorophyll&quot;</span>, <span class="dt">main=</span>ttext)</a>
+<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="co">#axis(2)</span></a>
+<a class="sourceLine" id="cb18-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb18-9" data-line-number="9"><span class="co">## Add MODIS, VIIRS and OCCCI data </span></a>
+<a class="sourceLine" id="cb18-10" data-line-number="10"><span class="kw">points</span>(<span class="kw">as.Date</span>(chlMODIS<span class="op">$</span>time), chlMODIS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb18-11" data-line-number="11"><span class="kw">points</span>(<span class="kw">as.Date</span>(chlVIIRS<span class="op">$</span>time), chlVIIRS<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb18-12" data-line-number="12"><span class="kw">points</span>(<span class="kw">as.Date</span>(chlOCCCI<span class="op">$</span>time), chlOCCCI<span class="op">$</span>avg, <span class="dt">type=</span><span class="st">&#39;b&#39;</span>, <span class="dt">bg=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pch=</span><span class="dv">21</span>,<span class="dt">cex=</span>.<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb18-13" data-line-number="13"><span class="co">## Add text annotation for legend</span></a>
+<a class="sourceLine" id="cb18-14" data-line-number="14"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.8</span>, <span class="st">&quot;SeaWiFS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb18-15" data-line-number="15"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.5</span>, <span class="st">&quot;MODIS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;red&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb18-16" data-line-number="16"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">2.2</span>, <span class="st">&quot;VIIRS&quot;</span>,<span class="dt">col=</span><span class="st">&quot;black&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb18-17" data-line-number="17"><span class="kw">text</span>(<span class="kw">as.Date</span>(<span class="st">&quot;1997-03-01&quot;</span>),<span class="fl">1.9</span>, <span class="st">&quot;OC-CCI&quot;</span>,<span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">pos=</span><span class="dv">4</span>)</a></code></pre></div>
 <p><img src="04-timeseries_chl_files/figure-html/plotall-1.png" width="672" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#dev.off() # This closes the png file if its been written to </span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">#dev.off() # This closes the png file if its been written to </span></a></code></pre></div>
 </div>
 <div id="make-maps-of-the-average-chlorophyll-for-each-satellite-mission" class="section level2">
 <h2><span class="header-section-number">4.7</span> Make maps of the average chlorophyll for each satellite mission</h2>
 <p>The average chlorophyll was saved earlier as the chl avgmap variable</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coast &lt;-<span class="st"> </span><span class="kw">map_data</span>(<span class="st">&quot;worldHires&quot;</span>, <span class="dt">ylim =</span> ycoord, <span class="dt">xlim =</span> xcoord)
-
-<span class="co"># Put arrays into format for ggplot</span>
-melt_map &lt;-<span class="st"> </span><span class="cf">function</span>(lon,lat,var) {
-  <span class="kw">dimnames</span>(var) &lt;-<span class="kw">list</span>(<span class="dt">Longitude=</span>lon, <span class="dt">Latitude=</span>lat)
-  ret &lt;-<span class="st"> </span><span class="kw">melt</span>(var,<span class="dt">value.name=</span><span class="st">&quot;Chl&quot;</span>)
-}
-
-<span class="co"># Loop for making 4 maps</span>
-datasetnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SeaWiFS&quot;</span>,<span class="st">&quot;MODIS&quot;</span>,<span class="st">&quot;VIIRS&quot;</span>,<span class="st">&quot;OC-CCI&quot;</span>)
-
-plot_list =<span class="st"> </span><span class="kw">list</span>()
-
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>) {
-  
-  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) chl &lt;-<span class="st"> </span>chlSeaWiFS
-  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) chl &lt;-<span class="st"> </span>chlMODIS
-  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) chl &lt;-<span class="st"> </span>chlVIIRS
-  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">4</span>) chl &lt;-<span class="st"> </span>chlOCCCI
-  
-   chlmap &lt;-<span class="st"> </span><span class="kw">melt_map</span>(chl<span class="op">$</span>longitude, chl<span class="op">$</span>latitude, chl<span class="op">$</span>avgmap)
-
-   p =<span class="st"> </span><span class="kw">ggplot</span>(
-     <span class="dt">data =</span> chlmap, 
-     <span class="kw">aes</span>(<span class="dt">x =</span> Longitude, <span class="dt">y =</span> Latitude, <span class="dt">fill =</span> <span class="kw">log</span>(Chl))) <span class="op">+</span>
-<span class="st">         </span><span class="kw">geom_raster</span>(<span class="dt">interpolate =</span> <span class="ot">FALSE</span>, <span class="dt">na.rm=</span>T) <span class="op">+</span>
-<span class="st">         </span><span class="kw">geom_polygon</span>(<span class="dt">data =</span> coast, <span class="kw">aes</span>(<span class="dt">x=</span>long, <span class="dt">y =</span> lat, <span class="dt">group =</span> group), <span class="dt">fill =</span> <span class="st">&quot;grey80&quot;</span>) <span class="op">+</span>
-<span class="st">         </span><span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">12</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span>
-<span class="st">         </span><span class="kw">coord_fixed</span>(<span class="fl">1.3</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">120</span>,<span class="op">-</span><span class="dv">116</span>), <span class="dt">ylim =</span> ycoord) <span class="op">+</span>
-<span class="st">         </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colours =</span> <span class="kw">rev</span>(<span class="kw">rainbow</span>(<span class="dv">12</span>)), <span class="dt">na.value =</span> <span class="ot">NA</span>, <span class="dt">limits=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>,<span class="dv">3</span>)) <span class="op">+</span>
-<span class="st">         </span><span class="kw">ggtitle</span>(<span class="kw">paste</span>(<span class="st">&quot;Average&quot;</span>, datasetnames[i])
-      ) 
-
-  plot_list[[i]] =<span class="st"> </span>p
-}
-
-<span class="co"># Now print out maps into a png file.  Can&#39;t use par function with ggplpot to get </span>
-<span class="co"># multiple plots per page.  Here using a function in the gridExtra package</span>
-
-<span class="co">#png(file=&quot;CHL_averagemaps.png&quot;)</span>
-<span class="kw">library</span>(grid)
-<span class="kw">grid.arrange</span>(plot_list[[<span class="dv">1</span>]],plot_list[[<span class="dv">2</span>]],plot_list[[<span class="dv">3</span>]],plot_list[[<span class="dv">4</span>]], <span class="dt">nrow =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">coast &lt;-<span class="st"> </span><span class="kw">map_data</span>(<span class="st">&quot;worldHires&quot;</span>, <span class="dt">ylim =</span> ycoord, <span class="dt">xlim =</span> xcoord)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co"># Put arrays into format for ggplot</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">melt_map &lt;-<span class="st"> </span><span class="cf">function</span>(lon,lat,var) {</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">  <span class="kw">dimnames</span>(var) &lt;-<span class="kw">list</span>(<span class="dt">Longitude=</span>lon, <span class="dt">Latitude=</span>lat)</a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">  ret &lt;-<span class="st"> </span><span class="kw">melt</span>(var,<span class="dt">value.name=</span><span class="st">&quot;Chl&quot;</span>)</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co"># Loop for making 4 maps</span></a>
+<a class="sourceLine" id="cb20-10" data-line-number="10">datasetnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SeaWiFS&quot;</span>,<span class="st">&quot;MODIS&quot;</span>,<span class="st">&quot;VIIRS&quot;</span>,<span class="st">&quot;OC-CCI&quot;</span>)</a>
+<a class="sourceLine" id="cb20-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb20-12" data-line-number="12">plot_list =<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb20-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb20-14" data-line-number="14"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>) {</a>
+<a class="sourceLine" id="cb20-15" data-line-number="15">  </a>
+<a class="sourceLine" id="cb20-16" data-line-number="16">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) chl &lt;-<span class="st"> </span>chlSeaWiFS</a>
+<a class="sourceLine" id="cb20-17" data-line-number="17">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) chl &lt;-<span class="st"> </span>chlMODIS</a>
+<a class="sourceLine" id="cb20-18" data-line-number="18">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) chl &lt;-<span class="st"> </span>chlVIIRS</a>
+<a class="sourceLine" id="cb20-19" data-line-number="19">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">4</span>) chl &lt;-<span class="st"> </span>chlOCCCI</a>
+<a class="sourceLine" id="cb20-20" data-line-number="20">  </a>
+<a class="sourceLine" id="cb20-21" data-line-number="21">   chlmap &lt;-<span class="st"> </span><span class="kw">melt_map</span>(chl<span class="op">$</span>longitude, chl<span class="op">$</span>latitude, chl<span class="op">$</span>avgmap)</a>
+<a class="sourceLine" id="cb20-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb20-23" data-line-number="23">   p =<span class="st"> </span><span class="kw">ggplot</span>(</a>
+<a class="sourceLine" id="cb20-24" data-line-number="24">     <span class="dt">data =</span> chlmap, </a>
+<a class="sourceLine" id="cb20-25" data-line-number="25">     <span class="kw">aes</span>(<span class="dt">x =</span> Longitude, <span class="dt">y =</span> Latitude, <span class="dt">fill =</span> <span class="kw">log10</span>(Chl))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-26" data-line-number="26"><span class="st">         </span><span class="kw">geom_tile</span>(<span class="dt">na.rm=</span>T) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-27" data-line-number="27"><span class="st">         </span><span class="kw">geom_polygon</span>(<span class="dt">data =</span> coast, <span class="kw">aes</span>(<span class="dt">x=</span>long, <span class="dt">y =</span> lat, <span class="dt">group =</span> group), <span class="dt">fill =</span> <span class="st">&quot;grey80&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-28" data-line-number="28"><span class="st">         </span><span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">12</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-29" data-line-number="29"><span class="st">         </span><span class="kw">coord_fixed</span>(<span class="fl">1.3</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">120</span>,<span class="op">-</span><span class="dv">116</span>), <span class="dt">ylim =</span> ycoord) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-30" data-line-number="30"><span class="st">         </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colours =</span> <span class="kw">rev</span>(<span class="kw">rainbow</span>(<span class="dv">12</span>)), </a>
+<a class="sourceLine" id="cb20-31" data-line-number="31">                              <span class="dt">na.value =</span> <span class="ot">NA</span>, <span class="dt">limits=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-32" data-line-number="32"><span class="st">         </span><span class="kw">ggtitle</span>(<span class="kw">paste</span>(<span class="st">&quot;Average&quot;</span>, datasetnames[i])</a>
+<a class="sourceLine" id="cb20-33" data-line-number="33">      ) </a>
+<a class="sourceLine" id="cb20-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb20-35" data-line-number="35">  plot_list[[i]] =<span class="st"> </span>p</a>
+<a class="sourceLine" id="cb20-36" data-line-number="36">}</a>
+<a class="sourceLine" id="cb20-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb20-38" data-line-number="38"><span class="co"># Now print out maps into a png file.  Can&#39;t use par function with **ggplpot** to get </span></a>
+<a class="sourceLine" id="cb20-39" data-line-number="39"><span class="co"># multiple plots per page.  Here using a function in the **gridExtra** package</span></a>
+<a class="sourceLine" id="cb20-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb20-41" data-line-number="41"><span class="co">#png(file=&quot;CHL_averagemaps.png&quot;)</span></a>
+<a class="sourceLine" id="cb20-42" data-line-number="42"><span class="kw">library</span>(grid)</a>
+<a class="sourceLine" id="cb20-43" data-line-number="43"><span class="kw">grid.arrange</span>(plot_list[[<span class="dv">1</span>]],plot_list[[<span class="dv">2</span>]],plot_list[[<span class="dv">3</span>]],plot_list[[<span class="dv">4</span>]], <span class="dt">nrow =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p><img src="04-timeseries_chl_files/figure-html/maps-1.png" width="672" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#dev.off()</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">#dev.off()</span></a></code></pre></div>
+</div>
+<div id="use-a-different-palette" class="section level2">
+<h2><span class="header-section-number">4.8</span> Use a different palette</h2>
+<p>The rainbow palette used in the previous example, and used for decades in the scientific community, creates visual biases of the data. See <a href="http://tos.org/oceanography/assets/docs/29-3_thyng.pdf" class="uri">http://tos.org/oceanography/assets/docs/29-3_thyng.pdf</a> for a good overview of this issue. THe color palettes suggested by Thyng et al. are contained in the <strong>cmocean</strong> package. Next we will redo the maps using the algae pallette in this package.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># Loop for making 4 maps</span></a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">datasetnames &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SeaWiFS&quot;</span>,<span class="st">&quot;MODIS&quot;</span>,<span class="st">&quot;VIIRS&quot;</span>,<span class="st">&quot;OC-CCI&quot;</span>)</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">plot_list =<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>) {</a>
+<a class="sourceLine" id="cb22-7" data-line-number="7">  </a>
+<a class="sourceLine" id="cb22-8" data-line-number="8">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) chl &lt;-<span class="st"> </span>chlSeaWiFS</a>
+<a class="sourceLine" id="cb22-9" data-line-number="9">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) chl &lt;-<span class="st"> </span>chlMODIS</a>
+<a class="sourceLine" id="cb22-10" data-line-number="10">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) chl &lt;-<span class="st"> </span>chlVIIRS</a>
+<a class="sourceLine" id="cb22-11" data-line-number="11">  <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">4</span>) chl &lt;-<span class="st"> </span>chlOCCCI</a>
+<a class="sourceLine" id="cb22-12" data-line-number="12">  </a>
+<a class="sourceLine" id="cb22-13" data-line-number="13">   chlmap &lt;-<span class="st"> </span><span class="kw">melt_map</span>(chl<span class="op">$</span>longitude, chl<span class="op">$</span>latitude, chl<span class="op">$</span>avgmap)</a>
+<a class="sourceLine" id="cb22-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb22-15" data-line-number="15">   p =<span class="st"> </span><span class="kw">ggplot</span>(</a>
+<a class="sourceLine" id="cb22-16" data-line-number="16">     <span class="dt">data =</span> chlmap, </a>
+<a class="sourceLine" id="cb22-17" data-line-number="17">     <span class="kw">aes</span>(<span class="dt">x =</span> Longitude, <span class="dt">y =</span> Latitude, <span class="dt">fill =</span> <span class="kw">log10</span>(Chl))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-18" data-line-number="18"><span class="st">         </span><span class="kw">geom_tile</span>(<span class="dt">na.rm=</span>T) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-19" data-line-number="19"><span class="st">         </span><span class="kw">geom_polygon</span>(<span class="dt">data =</span> coast, <span class="kw">aes</span>(<span class="dt">x=</span>long, <span class="dt">y =</span> lat, <span class="dt">group =</span> group), <span class="dt">fill =</span> <span class="st">&quot;grey80&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="st">         </span><span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">12</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-21" data-line-number="21"><span class="st">         </span><span class="kw">coord_fixed</span>(<span class="fl">1.3</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">120</span>,<span class="op">-</span><span class="dv">116</span>), <span class="dt">ylim =</span> ycoord) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-22" data-line-number="22"><span class="st">         </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colours =</span><span class="kw">cmocean</span>(<span class="st">&#39;algae&#39;</span>)(<span class="dv">9</span>), </a>
+<a class="sourceLine" id="cb22-23" data-line-number="23">                              <span class="dt">na.value =</span> <span class="ot">NA</span>, <span class="dt">limits=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-24" data-line-number="24"><span class="st">         </span><span class="kw">ggtitle</span>(<span class="kw">paste</span>(<span class="st">&quot;Average&quot;</span>, datasetnames[i])</a>
+<a class="sourceLine" id="cb22-25" data-line-number="25">      ) </a>
+<a class="sourceLine" id="cb22-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb22-27" data-line-number="27">  plot_list[[i]] =<span class="st"> </span>p</a>
+<a class="sourceLine" id="cb22-28" data-line-number="28">}</a>
+<a class="sourceLine" id="cb22-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb22-30" data-line-number="30"><span class="co"># Now print out maps into a png file.  Can&#39;t use par function with **ggplpot** to get </span></a>
+<a class="sourceLine" id="cb22-31" data-line-number="31"><span class="co"># multiple plots per page.  Here using a function in the **gridExtra** package</span></a>
+<a class="sourceLine" id="cb22-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb22-33" data-line-number="33"><span class="co">#png(file=&quot;CHL_averagemaps.png&quot;)</span></a>
+<a class="sourceLine" id="cb22-34" data-line-number="34"><span class="kw">library</span>(grid)</a>
+<a class="sourceLine" id="cb22-35" data-line-number="35"><span class="kw">grid.arrange</span>(plot_list[[<span class="dv">1</span>]],plot_list[[<span class="dv">2</span>]],plot_list[[<span class="dv">3</span>]],plot_list[[<span class="dv">4</span>]], <span class="dt">nrow =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="04-timeseries_chl_files/figure-html/fourmaps-1.png" width="672" /></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co">#dev.off()</span></a></code></pre></div>
 <img src="data:image/png;base64,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" alt="logo" style="position:absolute; top:0; right:0; padding:10px; width:100px"/>
 
 </div>
@@ -574,11 +652,13 @@ plot_list =<span class="st"> </span><span class="kw">list</span>()
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -586,12 +666,11 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -603,6 +682,10 @@ gitbook.start({
 "text": null
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },
