@@ -3,37 +3,43 @@
 
 ## Exercise book contents
 
-This document describes R scripts used for demostrations in the NOAA Satellite Course. The scripts highlight the uses for rerddapXtracto, a R package with functions that allow easy extraction of satellite data from ERDDAP servers.  
+This document describes R scripts used for demonstrations in the NOAA Satellite Course. The scripts highlight the uses for rerddapXtracto, a R package with functions that allow easy extraction of satellite data from ERDDAP servers. Some of these exercies are also in the rerddapXtracto vignette at https://cran.r-project.org/web/packages/rerddapXtracto/vignettes/UsingrerddapXtracto.html
 
 This chapter will provide an overview of the main rerddapXtracto functions. Please review the information presented here before moving on to the other chapters.  
 
-The remaining chapters each contain a separate demonstaion. The demonstaions are HTML or PDF versions of R notebooks. The source noebook file (.Rmd) are available for following along during the course or on your own.  
+The remaining chapters each contain a separate demonstration. The demonstrations are HTML or PDF versions of R notebooks. The source notebook file (.Rmd) are available for following along during the course or on your own.  
 
 **Chapter 2: Extract data within a boundary**   
-Visuallize data from within the boundaries of the Monterey Bay National Marine Sanctuary and visualize the data in a map. 
+Visualize data from within the boundaries of the Monterey Bay National Marine Sanctuary and visualize the data in a map. 
 
 **Chapter 3 - Matchups to ship or animal tracks**  
-Extract satellite data around a set of points defined by longitude, latitude, and time coordinates like that produced by an animal telemetery tag, and ship track, or a glider tract.  
+Extract satellite data around a set of points defined by longitude, latitude, and time coordinates like that produced by an animal telemetry tag, and ship track, or a glider tract. This function can now handle dataset requests which cross the dateline. 
 
-**Chapter 4 - Create and plot timeseries**   
-Extract a time-series of monthly satellite chlorophyll data for the period of 1997-present from four different monthly satellite datasets. Plot the results to examine the similarities and differenct amoung the datasets. This exercise is useful for application that require piecing together a long time series from several separate satellite missions.   
+**Chapter 4 - Create a transect and plot satellite data for it**   
+Create a transect of stations between two points and create a hovmoller plot of the satellite data showing distance along the transect against time.  Thanks to Eli Holmes for supplying the code for this.
 
-**Chapter 5 - Matchup satellite and buoy data**  
-Extract SST buoy data from ERDDAP tabular datase and then extract the SST satellite data that is coincident with the buoy data.  
+**Chapter 5 - Create and plot timeseries**   
+Extract a time-series of monthly satellite chlorophyll data for the period of 1997-present from four different monthly satellite datasets. Plot the results to examine the similarities and differences among the datasets. This exercise is useful for application that require piecing together a long time series from several separate satellite missions.   
 
-**Chapter 6 - TurtleWatch**  
+**Chapter 6 - Matchup satellite and buoy data**  
+Extract SST buoy data from ERDDAP tabular database and then extract the SST satellite data that is coincident with the buoy data.  
+
+**Chapter 7 - TurtleWatch**  
 Import SST data and apply a temperature threshold to identify turtle habitats  
+
+**Chapter 8 - Working with Projected Datasets**   
+Down the grid for a projected seaice dataset (coordinates are meters from the projection point) and calcualte the indices to use to extract a subset of the projected data.  Shows how to create the url to download data directly in R, i.e. does not use the `rerddap` or `rerddapXtracto` functions. Gives 4 different examples of ways to map this projected datset.    
 
 ## RerddapXtracto R package
 
-The rerddapXtracto package contains routines to simplify data extraction using ERD's ERDDAP web service. The rerddapXtracto package subsets and extracts satellite and other oceanographic related data from any ERDDAP server using the R package "rerddap" developed by Scott Chamberlain and the people at rOpenSci (https://ropensci.org/). 
+The "rerddapXtracto" package contains routines to simplify data extraction using ERD's ERDDAP web service. The "rerddapXtracto"" package subsets and extracts satellite and other oceanographic related data from any ERDDAP server using the R package "rerddap" developed by Scott Chamberlain and the people at rOpenSci (https://ropensci.org/). 
 
-The following is a description of the main functions of the rerddapXtracto package plus key functions from the "rerddap" package that are dependencies for the rerddapXtracto functions.  
+The following is a description of the main functions of the "rerddapXtracto"" package plus key functions from the "rerddap" package that are dependencies for the "rerddapXtracto" functions.  
 
 ### rxtracto function  
 
 **Summary**  
-Extracts environmental data from an ERDDAP server along a x,y,[z], and time trajectory, e.g. an animal or cruise track. The script allows you to control the size if a the box [cube] surrounding the x,y [z] point to be used to determine means and statistics. You can also control from which ERDDAP you pull data from. 
+Extracts environmental data from an ERDDAP server along a x,y,[z], and time trajectory, e.g. an animal or cruise track. The script allows you to control the size of a box [cube] surrounding the x,y [z] point to be used to determine means and statistics. You can also control from which ERDDAP you pull data from. 
 
 **Function**  
 rxtracto <- function(dataInfo, parameter = NULL, xcoord = NULL, 
@@ -49,7 +55,7 @@ tName = 'time', urlbase = 'https://coastwatch.pfeg.noaa.gov/erddap', verbose = F
 * __parameter__  
     A character string containing the name of the parameter to extract
 
-* __xcoor__  
+* __xcoord__  
     A comma separated array (list) of numbers containing the x-coordinates of the trajectory (if longitude in #' decimal degrees East, either 0-360 or -180 to 180)
 
 * __ycoord__	
@@ -116,7 +122,7 @@ A dataframe containing:
 
 **Full reference**   
 
-https://rmendels.github.io/rerddapXtracto_docs/reference/rxtracto.html
+https://cran.r-project.org/web/packages/rerddapXtracto/rerddapXtracto.pdf
 
 ### plotTrack function  
 
@@ -132,7 +138,7 @@ plotTrack(resp, xcoord, ycoord, plotColor = "viridis", name = NA, myFunc = NA, s
 * __resp__  
     The data frame returned from rxtracto()
 
-* __xcoor__  
+* __xcoord__  
     The comma separated array (list) of numbers containing the x-coordinates of the trajectory that was passed to rxtracto()  
 
 * __ycoord__	
@@ -142,7 +148,7 @@ plotTrack(resp, xcoord, ycoord, plotColor = "viridis", name = NA, myFunc = NA, s
     the color palette to use in the plot (The cmocean color palette by Kristen Thyng https://matplotlib.org/cmocean/#colormap-details)
 
 * __name__  
-    A name for colorbar label
+    A name for color bar label
 
 * __myFunc__  
     A function of one argument to transform the data
@@ -155,13 +161,13 @@ plotTrack(resp, xcoord, ycoord, plotColor = "viridis", name = NA, myFunc = NA, s
 
 **Full reference**  
 
-https://rmendels.github.io/rerddapXtracto_docs/reference/plotTrack.html#value  
+https://rdrr.io/cran/rerddapXtracto/man/plotTrack.html
 
 
 ### rxtracto_3D function    
 
 **Summary**  
-Extracts environmental data from an ERDDAP server in an (x,y,z, time) bounding box. The same call could be made directly form ERDDAP, but function's strength is the ability to extract data from polygons. 
+Extracts environmental data from an ERDDAP server in a (x,y,z, time) bounding box. The same call could be made directly form ERDDAP, but function's strength is the ability to extract data from polygons. 
 
 **Function**  
 extract <- rxtracto_3D(dataInfo, parameter = NULL, xcoord = NULL, ycoord = NULL,
@@ -177,7 +183,7 @@ extract <- rxtracto_3D(dataInfo, parameter = NULL, xcoord = NULL, ycoord = NULL,
 * __parameter__  
     character string containing the name of the parameter to extract
 
-* __xcoor__  
+* __xcoord__  
     a real array with the x-coordinates of the trajectory (if longitude in #' decimal degrees East, either 0-360 or -180 to 180)
 
 * __ycoord__  
@@ -210,7 +216,7 @@ extract <- rxtracto_3D(dataInfo, parameter = NULL, xcoord = NULL, ycoord = NULL,
 **Output**  
 
 A dataframe containing:
-* extract$data - the data array dimensioned (lon,lat,time)
+* extract$data - the data array with dimensions (lon,lat,time)
 
 * extract$varname - the name of the parameter extracted
 
@@ -224,7 +230,7 @@ A dataframe containing:
 
 **Full reference**   
 
-https://rmendels.github.io/rerddapXtracto_docs/reference/rxtracto_3D.html
+https://rdrr.io/cran/rerddapXtracto/man/rxtracto_3D.html
 
 ### plotBox function    
 
@@ -249,7 +255,7 @@ plotBBox(resp, plotColor = "viridis", time = NA, animate = FALSE, name = NA, myF
     animate the plot if there are multiple times (animate = TRUE to animate)
 
 * __name__  	
-    name for colorbar label
+    name for color bar label
 
 * __myFunc__  	
     function of one argument to transform the data
@@ -258,7 +264,7 @@ plotBBox(resp, plotColor = "viridis", time = NA, animate = FALSE, name = NA, myF
     maximum number of pixels to use in making the map - controls resolution  
 
 **Full reference** 
-    https://rmendels.github.io/rerddapXtracto_docs/reference/plotBBox.html
+  https://rdrr.io/cran/rerddapXtracto/man/plotBBox.html
 
 
 ### rxtractogon function    
@@ -314,7 +320,7 @@ rxtractogon(dataInfo, parameter, xcoord = NULL, ycoord = NULL,
 
 A dataframe with the structure: 
 
-* extract$data - the masked data array dimensioned (lon,lat,time)  
+* extract$data - the masked data array with dimensions (lon,lat,time)  
 
 * extract$varname - the name of the parameter extracted  
 
@@ -328,8 +334,7 @@ A dataframe with the structure:
 
 
 **Full reference**   
-
-https://rmendels.github.io/rerddapXtracto_docs/reference/rxtractogon.html
+https://rdrr.io/cran/rerddapXtracto/man/rxtractogon.html
 
 ### Rerddap::info function  
 
@@ -348,7 +353,7 @@ dataInfo <- rerddap::info(datasetID, url = 'https://coastwatch.pfeg.noaa.gov/erd
     the URL for the ERDDAP server to use
 
 * __additional arguments__  
-    https://www.rdocumentation.org/packages/rerddap/versions/0.5.0/topics/info
+    https://www.rdocumentation.org/packages/rerddap
 
 
 **Output**  
@@ -367,7 +372,7 @@ dataInfo <- rerddap::info(datasetID, url = 'https://coastwatch.pfeg.noaa.gov/erd
 
 **Full reference**  
 
-https://www.rdocumentation.org/packages/rerddap/versions/0.5.0/topics/info
+https://www.rdocumentation.org/packages/rerddap/
 
 
 ```{r, nice-fig2, echo=FALSE}

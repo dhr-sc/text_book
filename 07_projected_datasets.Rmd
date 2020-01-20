@@ -1,0 +1,359 @@
+# Projected Datasets {#Projected}
+>notebook filename | 07_projected_dataset.Rmd  
+history | created August 2019
+
+This exercise works with a sea ice dataset served on PolarWatch (polarwatch.noaa.gov) that is projected, meaning their axis coordinates are given in meters from a central projection. The latitude and longitude grids for these datasets are served as a separate dataset that must be used if one wants to subset the data by latitude or longitude or to plot it using latitude and longitude.
+
+The exercise demonstrates the following techniques:  
+
+* Working with grids associated with a projected dataset 
+* Creating the URL data requests to download data from ERDDAP  
+* Using the **timeAverage** function in the **openair** package to calculate annual statistics 
+* Using **ggplot** to plot timeseries of multiple sea ice variables 
+* Making various different maps of the projected data
+
+## Install required packages and load libraries 
+
+```{r install, message=FALSE, warning=FALSE}
+# Function to check if pkgs are installed, install missing pkgs, and load
+pkgTest <- function(x)
+{
+  if (!require(x,character.only = TRUE))
+  {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop(x, " :Package not found")
+  }
+}
+
+list.of.packages <- c("ncdf4","openair","ggplot2","reshape2","scales","lubridate",
+                      "cmocean","maps","mapdata","rgdal","raster","RColorBrewer")
+
+# create list of installed packages
+pkges = installed.packages()[,"Package"]
+
+for (pk in list.of.packages) {
+  pkgTest(pk)
+}
+
+
+```
+## Download the sea ice concentration data 
+
+Subsetting the data from a projected dataset requires a few additional steps than most of the datasets you will find in ERDDAP.  
+
+* Download from ERDDAP the 2D latitude and longitude grids that are associated with the projected dataset
+
+* Find the x and y indices that correspond with your area of interest
+
+* Use the indices to select the x and y coordinate axis ranges to generate the ERDDAP data request URL for the projected dataset 
+
+
+First look at the NSIDC sea ice concentration datasets that are available in the PolarWatch ERDDAP.  
+
+* Go to the PolarWatch ERDDAP at `https://coastwatch.pfeg.noaa.gov/erddap/`
+* In the search box type "NSIDC" and click the "Search' button 
+
+![NSIDC search result](images/nsidc.png)
+A list of datasets will load, including:  
+
+* Near real-time data from the Northern and Southern Hemispheres
+* Science Quality data from the Northern and Southern Hemispheres
+* The latitude and longitude grid for the Arctic  
+
+Use the science quality dataset for the Northern Hemisphere (ERDDAP ID = nsidcCDRiceSQnhmday) and the associated lat-lon 2D grid dataset for the Arctic (ERDDAP ID = nsidcCDRice_nh_grid). Clicking on the 'data' or 'graph' link to the left of the dataset listingwill bring up a page from which the url for a download of the data in a ncdf file can be obtained.
+
+
+![Obtain URL for data download](images/ObtainURL.png)
+
+
+
+
+
+__Determine what values of xgrid and ygrid correspond to the desired latitude and longitude boundaries__
+
+* From within R construct a URL data request using the dataset id 'nsidcCDRice_nh_grid.'
+
+```{r grid}
+
+url <- 'https://polarwatch.noaa.gov/erddap/griddap/'
+gridid <- 'nsidcCDRice_nh_grid'
+urlcall <- paste0(url,gridid,'.nc?longitude[(5812500.0):1:(-5337500.0)][(-3837500.0):1:(3737500.0)],latitude[(5812500.0):1:(-5337500.0)][(-3837500.0):1:(3737500.0)]')
+```
+
+* Download the netCDF file
+
+
+```{r netcdf}
+
+test1 <- download.file(urlcall,destfile="test1.nc",mode='wb')
+```
+
+* Read the downloaded netCDF file and load data into variables  
+
+```{r read}
+
+datafileID<-nc_open('test1.nc')
+
+ygrid <- ncvar_get(datafileID, varid="ygrid")
+xgrid <- ncvar_get(datafileID, varid="xgrid")
+longitude <- ncvar_get(datafileID, varid="longitude")
+latitude <- ncvar_get(datafileID, varid="latitude")
+
+nc_close(datafileID)
+```
+
+* Determine which indices in the latitude array to use  
+
+For this example we are interested in all data within the Arctic Circle, i.e. north of 66.5N, so select for values greater than or equal to 66.5°. To subset by longitude as well we would have to include longitude in this query as well.
+
+```{r area}
+inds = which(latitude > 66.5, arr.ind=TRUE)
+rowrange <- range(inds[,1])
+colrange <- range(inds[,2])
+```
+
+__Subset the sea ice concentration dataset using indices__    
+
+Use the science quality dataset for the Northern Hemisphere (ERDDAO ID = nsidcCDRiceSQnhmday). There are four different sea ice variables in this dataset. Downloading all of them requires adding to the URL the name of each variable followed by the date and coordinate constraints. If you need a refresher on the structure of the URL call, go to the erddap "Data Access Form" for a dataset and use the 'generate the URL' button.
+
+* Generate a URL data request using the indices  
+
+```{r genURL}
+
+dataid <- 'nsidcCDRiceSQnhmday'
+varnames <- c('seaice_conc_monthly_cdr','goddard_merged_seaice_conc_monthly','goddard_nt_seaice_conc_monthly','goddard_bt_seaice_conc_monthly')
+datestring <- '[(1997-01-16T00:00:00Z):1:(2017-12-16T00:00:00Z)]'
+coordstring <- paste0('[',colrange[1],':1:',colrange[2],'][',rowrange[1],':1:',rowrange[2],']')
+for (i in 1:length(varnames)) {
+  if (i == 1) {urlcall <- paste0(url,dataid,'.nc?',varnames[i],datestring,coordstring)} 
+  else {urlcall <- paste0(urlcall,',',varnames[i],datestring,coordstring)}
+}
+```
+
+  
+* Download the netCDF file  (this will take a few minutes) 
+```{r download1}
+
+test2 <- download.file(urlcall,destfile="test2.nc",mode='wb')
+
+```
+
+
+* Read the netCDF file and load the data into variables 
+
+For simplicity rename the 4 different sea ice datasets seaice1 - seaice4  
+```{r rename}
+
+datafileID<-nc_open('test2.nc')
+
+datatime<-ncvar_get(datafileID, varid="time")
+datatime<-as.Date(as.POSIXlt(datatime,origin='1970-01-01',tz= "GMT"))
+ygrid <- ncvar_get(datafileID, varid="ygrid")
+xgrid <- ncvar_get(datafileID, varid="xgrid")
+seaice1 <- ncvar_get(datafileID, varid=varnames[1])
+seaice2 <- ncvar_get(datafileID, varid=varnames[2])
+seaice3 <- ncvar_get(datafileID, varid=varnames[3])
+seaice4 <- ncvar_get(datafileID, varid=varnames[4])
+
+nc_close(datafileID)
+```
+
+__Count occurrences where seaice > 0.6 and <=1__     
+
+Since each pixel in this grid is 25 km2, the area of ice coverage is a multiple of the occurrences of non-NA values.  
+
+See description of methodology at https://stackoverflow.com/questions/30292373/r-count-occurrences-on-a-multidimensional-array
+
+```{r count}
+threshold <- .6 
+
+icearea1 <- 25*25*apply(seaice1,c(3),function(slice) sum(slice>threshold & slice<=1,na.rm=T))
+icearea2 <- 25*25*apply(seaice2,c(3),function(slice) sum(slice>threshold & slice<=1,na.rm=T))
+icearea3 <- 25*25*apply(seaice3,c(3),function(slice) sum(slice>threshold & slice<=1,na.rm=T))
+icearea4 <- 25*25*apply(seaice4,c(3),function(slice) sum(slice>threshold & slice<=1,na.rm=T))
+
+```
+
+__Make a quick plot of the data using base graphics__  
+```{r quickplot}
+
+plot(datatime,icearea1,type='l',col="black",ylab="Ice Area (km^2)")
+lines(datatime,icearea2,type='l',col="blue")
+lines(datatime,icearea3,type='l',col="green")
+lines(datatime,icearea4,type='l',col="red")
+```
+
+Not surprisingly the data is dominated by the seasonal cycle. Since most of the datasets have virtually identical values it can appear as if some of the datasets are not being plotted, but they have just been plotted over one another.  The seasonal minima seems to have more interannual variations so calculate seasonal minima for each dataset. 
+
+Use the `timeAverag` function of the `openair package`, but first write all the variables into one dataframe.  
+
+```{r df1}
+ice.df <- data.frame(date=datatime,icearea1=icearea1,icearea2=icearea2,icearea3=icearea3,icearea4=icearea4)
+annualmin <-  timeAverage(ice.df,avg.time = "year",statistic = "min")
+
+```
+__Plot using ggplot__
+
+* Reshape the dataframe to plot the data more easily with ggplot 
+```{r reshape}
+
+annualmin2 <- melt(annualmin,  id.vars = 'date', variable.name = 'Datasets')
+```
+
+* Plot the data all on one graph
+```{r graphall}
+ggplot(annualmin2, aes(date,value)) + geom_line(aes(colour = Datasets)) +
+                                    xlab("") + ylab("Ice Area (km^2)") + 
+                                    scale_y_continuous(labels = scales::comma)
+
+```
+
+* Plot the data on different graphs
+```{r graph2}
+ggplot(annualmin2, aes(date,value)) + geom_line() + facet_grid(Datasets ~ .) + 
+                                     xlab("") + ylab("Ice Area (km^2)") + 
+                                     scale_y_continuous(labels = scales::comma)
+```
+
+## Make maps of the area  
+
+The exercise will demonstrate four different ways to map the data, because with R there is always more than one way to do things! 
+
+First, download the latitude and longitude grids for our subsetted dataset, using the same coordinate string used for the data download. 
+
+```{r latlongrids}
+urlcall <- paste0(url,gridid,'.nc?longitude',coordstring,',latitude',coordstring) 
+test3 <- download.file(urlcall,destfile="test3.nc",mode='wb')
+```
+__Read and format the data__ 
+
+* Load the data from the netCDF file  
+
+```{r loadnetcdf}
+
+datafileID<-nc_open('test3.nc')
+
+ygrid <- ncvar_get(datafileID, varid="ygrid")
+xgrid <- ncvar_get(datafileID, varid="xgrid")
+longitude <- ncvar_get(datafileID, varid="longitude")
+latitude <- ncvar_get(datafileID, varid="latitude")
+
+nc_close(datafileID)
+```
+
+* Choose a date to use for the map and determine the index value for the date
+```{r pickdate}
+plotdate <- '2017-12-01'
+idate = which((month(datatime)==month(plotdate)) & (year(datatime)==year(plotdate)))
+```
+
+* Make a long-format dataframe for that time period to use with ggplot
+```{r dataframe}
+dims <- dim(longitude)
+icemap.df <- data.frame(Longitude=array(longitude,dims[1]*dims[2]),
+                        Latitude=array(latitude,dims[1]*dims[2]))
+icemap.df$Seaice <- array(seaice1[,,idate],dims[1]*dims[2])
+```
+
+* Change the No_fill value from 2.54 to NA
+```{r fillval}
+icemap.df$Seaice[icemap.df$Seaice > 2] <- NA 
+```
+
+__First map the data on a geographical grid, just for kicks__
+```{r map1}
+ggplot(aes(x = Longitude, y = Latitude), data = icemap.df) + 
+       geom_point(aes(color=Seaice)) + 
+       scale_color_gradientn(colours=rev(brewer.pal(n = 5, name = "Blues")),na.value="black") 
+```
+
+
+The map should show only the area north of the Arctic Circle (66.5°N), confirming that the data was properly extracted.  
+
+__Now map the data using polar coordinates__  
+
+Follow the example given at  https://www.r-bloggers.com/drawing-polar-centered-spatial-maps-using-ggplot2/
+but note that the opts function has been deprecated, and theme is now used instead.  
+
+
+```{r map2}
+res <- 1 # 1 degree resolution
+x_cell_lim <- c(180, -180) + c(1, -1) * res/2
+y_cell_lim <- c(90, 70) + c(1, -1) * res/2
+ 
+ggplot(aes(x = Longitude, y = Latitude), data = icemap.df) + 
+       geom_point(aes(color=Seaice)) + 
+       scale_color_gradientn(colours=rev(brewer.pal(n = 5,  name="Blues")),na.value="black") +
+      coord_polar(start = -pi/2) +
+       xlim(x_cell_lim) + ylim(y_cell_lim) + 
+       theme(axis.title.y = element_blank(), axis.title.x = element_blank(), 
+       axis.ticks = element_blank(), axis.text.y = element_blank(), 
+       panel.border = element_blank())
+```
+
+
+__Try mapping using a different method__  
+
+Following example at https://stackoverflow.com/questions/48816773/polar-stereographic-map-in-r
+```{r map3}
+
+data("wrld_simpl", package = "maptools")                                                                            
+# wm <- raster::crop(wrld_simpl, raster::extent(-180, 180, 60, 90))
+wm <- ggplot2::map_data(wrld_simpl)
+
+#wm <- wrld_simpl
+x_lines <- seq(-120,180, by = 60)
+
+ggplot() +
+  geom_polygon(data = wm, aes(x = long, y = lat, group = group), 
+               fill = "grey", colour = "black", alpha = 0.8) +
+ # Add data overlay 
+  geom_point(data=icemap.df, aes(x = Longitude, y = Latitude, color=Seaice)) + 
+       scale_color_gradientn(colours=rev(brewer.pal(n = 5, name = "Blues")),na.value="black") + 
+  # Convert to polar coordinates
+  coord_map("ortho", orientation = c(90, 0, 0), xlim = c(-180, 180), ylim = c(60, 90)) +
+  #coord_map("ortho", orientation = c(90, 0, 0)) +
+  scale_y_continuous(breaks = seq(60, 90, by = 5), labels = NULL) +
+
+  # Removes Axes and labels
+  scale_x_continuous(breaks = NULL) +
+  xlab("") + 
+  ylab("") +
+
+  # Adds labels
+  geom_text(aes(x = x_lines, y = 55, label = c("120°W", "60°W", "0°", "60°E", "120°E", "180°W"))) +
+
+  # Adds axes
+  geom_hline(aes(yintercept = 60), size = 1)  +
+  geom_segment(aes(y = 60, yend = 90, x = x_lines, xend = x_lines), linetype = "dashed") +
+
+# Change theme to remove axes and ticks
+theme(panel.background = element_blank(),
+      panel.grid.major = element_line(size = 0.25, linetype = 'dashed',
+                                      colour = "black"),
+      axis.ticks=element_blank())  
+
+
+
+```
+
+__Now map the data using grid (meters) coordinates__ 
+
+```{r map4}
+dims <- dim(xgrid)
+icemap2 <- expand.grid(xgrid=xgrid,ygrid=ygrid)
+icemap2$Seaice <- array(seaice1[,,idate],dim(xgrid)*dim(ygrid))
+
+icemap2$Seaice[icemap2$Seaice > 2] <- NA 
+
+
+ggplot(aes(x = xgrid, y = ygrid, fill=Seaice), data = icemap2) + 
+       geom_tile() + 
+       scale_fill_gradientn(colours=rev(brewer.pal(n = 5, name = "Blues")),na.value="black") 
+```
+
+```{r, nice-fig2, echo=FALSE}
+htmltools::img(src = knitr::image_uri("images/cw_logo_notext.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px; width:100px')
+```

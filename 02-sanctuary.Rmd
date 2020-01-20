@@ -1,20 +1,18 @@
-
 # Extract data within a boundary {#sanctuary}
->notebook filename | 02-sanctuary.Rmd    
+>notebook filename | 02-sanctuary.Rmd  
 history | converted to R notebook from sanctuary.R  
 
 In this exercise, you will download data from within the boundaries of the Monterey Bay National Marine Sanctuary (MBNMS) and visualize the data in a map. 
 
 The exercise demonstrates the following skills:  
 
-* Loading data from a CSV file  
 * Using **rerddap** to retrieve information about a dataset from ERDDAP 
 * Using the **rxtractogon** function to extract satellite data within an polygon over time  
 * Mapping satellite data  
 
 ## Install packages and load libraries
 ```{r install,message=FALSE,warning=FALSE}
-
+pkges = installed.packages()[,"Package"]
 # Function to check if pkgs are installed, install missing pkgs, and load
 pkgTest <- function(x)
 {
@@ -26,7 +24,8 @@ pkgTest <- function(x)
 }
 
 # create list of required packages
-list.of.packages <- c("ncdf4", "parsedate", "rerddap", "sp", "devtools", "ggplot2", "RColorBrewer", 
+list.of.packages <- c("ncdf4","parsedate","rerddap","plotdap","sp","rerddapXtracto",
+                      "ggplot2", "RColorBrewer", "colorRamps","cmocean", 
                       "reshape2", "maps", "mapdata", "jsonlite")
 
 # Run install and load function
@@ -35,51 +34,28 @@ for (pk in list.of.packages) {
 }
 
 # create list of installed packages
-pkges = installed.packages()[,"Package"]
+#pkges = installed.packages()[,"Package"]
 
-# Check if devtools pkgs are install. Install missing pkgs.
-if(!('rerddapXtracto' %in% pkges)) {
-  devtools::install_github("rmendels/rerddapXtracto")}
-if(!('plotdap' %in% pkges)) {
-  devtools::install_github('ropensci/plotdap')} 
-if(!('rerddap' %in% pkges)) {
-  devtools::install_github("ropensci/rerddap")}
-
-library(rerddap)
-library(rerddapXtracto)
-library(mapdata)
 ```
 
 ## Load sanctuary boundary coordinates
-For this example, the sanctuary boundary is definded within a comma separated file (mbnms.txt) in the shapes folder. The file contains a series of longitude and latitude coordinates the together draw the the boundry of the sanctuary on a map, like tracing a dot-to-dot drawing.  
+The **rerddapXtracto**  package comes with the dataset **mbnms** which conatains the longitude and latitude values for the boundary of the Monterey Bay National Marine Sanctuary.  These coordinates draw the the boundary of the sanctuary on a map, like tracing a dot-to-dot drawing.  Take a quick look at the contents of this data variable. 
+ 
+```{r loadmbnms}
+str(mbnms)
+```
 
->Longitude, Latitude  
--120, 52.0  
--120, 52.0  
--120, 52.0  
-'...  
--120, 52.0  
-
-A boundary file for Olympic Coast National Marine Sanctuary (OCNMS) is also availaible in the shapes folder. Additional sanctuary boundaries may be obtained at   [http://sanctuaries.noaa.gov/library/imast_gis.html](http://sanctuaries.noaa.gov/library/imast_gis.html).
+Additional sanctuary boundaries may be obtained at   [http://sanctuaries.noaa.gov/library/imast_gis.html](http://sanctuaries.noaa.gov/library/imast_gis.html).
 
 **The script below:**   
 
-* Loads the boudary data from the CSV file into a dataframe  
 * Extracts the longitude and latitude data into vector variables  
 
-
-```{r load_csv}
-# Assign the csv path and file to the boundary variable
-boundary <- 'shapes/mbnms.txt'
-# boundary <- 'shapes/ocnms.txt'  # uncomment this line and comment out the above line to run for the OCNMS 
-
-# Load CSV boudary data into the dataframe "poly"
-poly <- read.csv(boundary)
-names(poly) <- c("Longitude","Latitude")
+```{r latlon}
 
 # Extract the longitude and latitude data into vector variables
-xcoord <- poly$Longitude
-ycoord <- poly$Latitude
+xcoord <- mbnms$Longitude
+ycoord <- mbnms$Latitude
 ```
 ## Select the chloropyll dataset  
 For this example we will use 750 m VIIRS monthly chlorophyll dataset (ID erdVHNchlamday)  
@@ -96,9 +72,9 @@ dataInfo
 ## Set the options for rxtractogon  
 * Use the name of the chlorophyll parameter that was displayed above in dataInfo: **parameter <- "chla"** 
 * The metadata from dataInfo also shows you that this variable has a altitude coordinate that equals zero. Set the value of the time coordinate to zero: **zcoord <- 0.**  
-* The time variable passed to xtracogon must contain two elements, the start and endpoints of the desired timeperiod. 
+* The time variable passed to xtracogon must contain two elements, the start and endpoints of the desired time period. 
   * This example makes use of the "last" option of ERDDAP to retrieve data from the most recent time step.  
-  * The "last' option also accepts the "-" operator. To request the time step with the second morst recent data use "last-1". 
+  * The "last' option also accepts the "-" operator. To request the time step with the second most recent data use "last-1". 
   * In the script below the time variable (tcoord) is defined as **tcoord <- c("last-1", "last")**  
 
 ```{r options}
@@ -113,7 +89,7 @@ ycoord <- mbnms$Latitude
 zcoord <- 0. 
 ```
 ## Extract data and mask it using rxtractogon  
-* Set the arguments within the **rxtractogon** function using the dataset information (dataInfo), the longitude (xcoord) and latitude (ycoord) vectors from the CSV file, the time (tcoord) vector and alitude (zcoord) variable. 
+* Set the arguments within the **rxtractogon** function using the dataset information (dataInfo), the longitude (xcoord) and latitude (ycoord) vectors from the CSV file, the time (tcoord) vector and altitude (zcoord) variable. 
 * Then run **rxtractogon** to extract data from the "erdVHNchlamday" dataset and mask out data not falling within the MBNMS boundary.  
 * List the data
 ```{r octogon}
@@ -124,50 +100,87 @@ sanctchl <- rxtractogon (dataInfo, parameter=parameter, xcoord=xcoord, ycoord=yc
 str(sanctchl)
 ```
 
-The extracted data contains two time periods of chlorophyll data within the sanctuary boundaries. In this example we will make a plot of the second time period. 
 
-##Prepare data for plotting
-```{r plot}
-## Remove extraneous zcoord (altitude) dimension from chlorophyll data
-sanctchl$chla <- drop(sanctchl$chla) 
+## Select the time period    
 
-## Define a helper function mapFrame to reshape the data to be used in ggplot
-mapFrame<- function(longitude,latitude,chla){
-  dims<-dim(chla)
-  chla<-array(chla,dims[1]*dims[2])
-  longitude<-longitude-360
-  chlaFrame<-expand.grid(x=longitude,y=latitude)
-  chlaFrame$chla<-chla
-  return(chlaFrame)
-}
+The extracted data contains two time periods of chlorophyll data within the sanctuary boundaries. In this example, the second time period will be selected. 
+
+```{r chl}
+
+sanctchl1 <- sanctchl
+sanctchl1$chla <- sanctchl1$chla[, , 2]
+sanctchl1$time <- sanctchl1$time[2]
+
 ```
-### Plot the data
-* Create a map that shows the satellite data within the sanctuary bounds
-* Latitude and longitude are the axes
-* Chl data is sanctchl$chla variable
-* Uncomment the png and dev.off lines to save the plot to a file
+## Plot the data
+
+Below we will demonstrate two different ways of plotting the data: 
+
+(1) plotBBox - Using the **plotBBox** function in rerddapXtracto allows you to quickly plot the data
+
+(2) ggplot- Using ggplot allows you to customize the map, you should use either base graphics or ggplot.  Here we use ggplot to make a map of the data. 
+
+### Using the plotBBox function   
 
 ```{r map}
-#set the map extent
-xlim = c(min(xcoord)+.001*min(xcoord),max(xcoord)-.001*max(xcoord))
-ylim = c(min(ycoord)-.01*min(ycoord),max(ycoord)+.01*max(ycoord))
+plotBBox(sanctchl1,plotColor='algae',maxpixels=100000)
 
-# png(file = "Sanctuary.png")  # uncomment to save the plot
-mbnmsFrame<-mapFrame(sanctchl$longitude+360,sanctchl$latitude,log(sanctchl$chla[,,2]))
-w <- map_data("worldHires", ylim = ylim, xlim = xlim)
-myplot<-ggplot() + geom_path(data=poly,aes(x=Longitude,y=Latitude),colour="black")   
-myplot<-myplot + 
-  geom_raster(data = mbnmsFrame, aes(x = x, y = y, fill = chla),interpolate = FALSE) + 
-  theme_bw() + 
-  scale_fill_gradientn(colours =rev(rainbow(12)),limits=c(-1.5,3)) +
-  ylab("Latitude") + xlab("Longitude") +
-  geom_polygon(data = w, aes(x=long, y = lat, group = group), fill = "grey80") +
-  coord_fixed(1.3,xlim = xlim, ylim = ylim) + 
-  ggtitle(paste("log(Chla)",sanctchl$time[2])) 
-myplot
-
-# dev.off()  # uncomment to save the plot
 ```
+
+**Apply a math function to the data**  
+
+Often it better to plot the log of Chlorophyll data, so here we will apply the logrithmic function to the chlorophyll data 
+
+```{r log}
+myFunc <- function(x) log10(x) 
+plotBBox(sanctchl1, plotColor = 'algae',maxpixels=100000, myFunc=myFunc)
+
+
+```
+
+** Using ggplot   
+
+First reformat the data for use in ggplot by flatten the XY data array into a long-format vector of length X*Y.  
+Next, expand the longitude and latitude vectors into vectors of length X*Y   
+
+
+```{r flatten}
+dims <- dim(sanctchl1$chla)
+sanctchl.lf <- expand.grid(x=sanctchl1$longitude,y=sanctchl1$latitude)
+sanctchl.lf$chla <- array(sanctchl1$chla,dims[1]*dims[2])
+```
+
+**Determine the limits for the bounding box**  
+```{r limits}
+xlim <- c(min(xcoord),max(xcoord))
+ylim <- c(min(ycoord),max(ycoord))
+```
+
+
+**Get the coastline data for the region**  
+
+Note: for a large area it is better to use **world** rather than **worldHires** base map.
+```{r mapbase}
+coast <- map_data("worldHires", ylim = ylim, xlim = xlim)
+```
+
+
+**Make the map**   
+```{r map1}
+ggplot(data = sanctchl.lf, aes(x = x, y = y, fill = chla)) +
+  geom_tile(na.rm=T) +
+  geom_polygon(data = coast, aes(x=long, y = lat, group = group), fill = "grey80") +
+  theme_bw(base_size = 15) + ylab("Latitude") + xlab("Longitude") +
+  coord_fixed(1.3,xlim=xlim,ylim=ylim,expand = c(0, 0)) +
+  ggtitle(unique(as.Date(sanctchl1$time))) +
+  scale_fill_gradientn(colours = c(blue2red(12),"Black"), oob = scales::squish,
+                       limits=c(0,25), na.value="white") 
+```
+
+
+
+
+
 
 ```{r, nice-fig2, echo=FALSE}
 htmltools::img(src = knitr::image_uri("images/cw_logo_notext.png"), 
